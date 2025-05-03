@@ -1,0 +1,49 @@
+# Blog Project Patterns and Intelligence
+
+## Project Patterns
+- **Django App Structure**: Each functional area gets its own Django app (posts, categories, newsletter, search, etc.)
+- **REST API Versioning**: All API endpoints are versioned (e.g., /api/v1/posts/)
+- **Model-View-Serializer**: Follow Django REST Framework's pattern for API development
+- **Containerized Services**: Each service (Django, Postgres, Redis, Next.js) has its own container
+- **Environment-based Settings**: Different settings for development, testing, and production
+- **Frontend Component Isolation**: React components are organized by functionality and reusability
+
+## User Preferences
+- **Minimalist Design**: Clean, distraction-free interface with focus on content
+- **Markdown Support**: All content editing uses markdown with preview
+- **Dark Mode Support**: Application supports both light and dark themes
+- **Zero User Accounts**: No user login or authentication required for reading
+- **Scheduled Publishing**: Content can be scheduled for future publication
+- **Image Optimization**: All images are automatically optimized for web
+
+## Known Challenges
+- **Cross-Origin Requests**: Django backend and Next.js frontend run on different ports/domains
+- **Media File Management**: Handling uploads and serving optimized images
+- **Server-Side Rendering**: Ensuring proper SEO with dynamic content
+- **Docker Development Workflow**: Keeping development experience smooth with containers
+- **API Performance**: Optimizing API responses for frontend consumption
+- **Dark Mode Implementation**: Consistent theming across all components
+
+## Implementation Paths
+- **Initial Setup**: Docker → Django Project → Next.js Project → Database
+- **Backend Development**: Models → Admin → API → Background Tasks
+- **Frontend Development**: Layout → Components → Pages → Theme → API Integration
+- **Feature Implementation**: Core Blog → Search → Featured Posts → Newsletter → Social
+- **Deployment Flow**: Local → CI/CD Pipeline → Staging → Production
+
+## Tool Usage
+- **Docker Compose**: Primary tool for development environment
+- **pip/npm**: Package management
+- **Django migrations**: Database schema management
+- **Django admin**: Content management
+- **DRF Browsable API**: API testing and documentation
+- **React DevTools**: Frontend debugging
+- **PostgreSQL CLI**: Database management
+- **Redis CLI**: Cache inspection
+
+## Project Evolution
+- **MVP Focus**: Initially focus on core blog functionality only
+- **Feature Expansion**: Add newsletter and social sharing after core is stable
+- **Performance Optimization**: Add caching and optimizations post-MVP
+- **Monitoring Addition**: Add analytics and monitoring as project matures
+- **Extension Points**: Design for future extensions without overengineering initially 
