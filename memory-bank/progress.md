@@ -28,6 +28,8 @@
 - Homepage layout with featured and regular post sections
 - Single post detail page with markdown rendering and image support
 - Category archive page implementation with SSR and infinite scroll
+- Search page implementation with SSR and infinite scroll
+- Search form on homepage for easy access
 
 ## In Progress
 - Search functionality frontend & backend

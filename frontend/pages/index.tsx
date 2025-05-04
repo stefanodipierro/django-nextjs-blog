@@ -86,6 +86,22 @@ const Home: React.FC<HomeProps> = ({
           </p>
         </header>
         
+        {/* Search form on homepage */}
+        <form method="get" action="/search" className="mb-8 flex justify-center">
+          <input
+            type="text"
+            name="q"
+            placeholder="Search posts..."
+            className="w-1/2 px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none"
+          />
+          <button
+            type="submit"
+            className="px-4 py-2 bg-indigo-600 text-white rounded-r-md hover:bg-indigo-700"
+          >
+            Search
+          </button>
+        </form>
+        
         <FeaturedPosts 
           posts={featuredPosts} 
           isLoading={isLoadingFeatured} 

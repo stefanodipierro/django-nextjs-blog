@@ -37,9 +37,10 @@ Now that the homepage, featured posts, infinite scroll, and single-post pages ar
 - Updated Django `ALLOWED_HOSTS` and CORS to include `django`
 - Single post detail page now renders correctly with images
 - Implemented category archive page on frontend with SSR and infinite scroll
+- Implemented search page on frontend with SSR and infinite scroll (submit-only)
+- Added search form to homepage for easy access to search functionality
 
 ## Next Steps
-- Implement search (full-text against Postgres) and search UI
 - Add newsletter subscription component
 - Optimize media handling (image optimisation, placeholders)
 - Add social sharing buttons on post pages
