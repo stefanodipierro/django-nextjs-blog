@@ -62,4 +62,8 @@ out/
 
 # OS specific
 .DS_Store
-Thumbs.db 
+Thumbs.db
+
+# Unignore frontend/lib directory for API client code
+!frontend/lib/
+!frontend/lib/** 

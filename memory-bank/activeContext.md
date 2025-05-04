@@ -39,9 +39,9 @@ Now that the homepage, featured posts, infinite scroll, and single-post pages ar
 - Implemented category archive page on frontend with SSR and infinite scroll
 - Implemented search page on frontend with SSR and infinite scroll (submit-only)
 - Added search form to homepage for easy access to search functionality
+- Added newsletter subscription form in the footer on every page
 
 ## Next Steps
-- Add newsletter subscription component
 - Optimize media handling (image optimisation, placeholders)
 - Add social sharing buttons on post pages
 - Improve SEO meta tags (OpenGraph, Twitter)

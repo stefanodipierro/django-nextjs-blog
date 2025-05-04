@@ -30,10 +30,10 @@
 - Category archive page implementation with SSR and infinite scroll
 - Search page implementation with SSR and infinite scroll
 - Search form on homepage for easy access
+- Newsletter subscription form in footer on every page
 
 ## In Progress
 - Search functionality frontend & backend
-- Newsletter subscription integration
 - Media optimisation & placeholder loading
 - Testing and refinement of infinite scroll functionality
 - Loading state optimization
