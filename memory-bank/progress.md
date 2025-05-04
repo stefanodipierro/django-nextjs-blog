@@ -27,9 +27,9 @@
 - PostGrid component with infinite scroll implementation
 - Homepage layout with featured and regular post sections
 - Single post detail page with markdown rendering and image support
+- Category archive page implementation with SSR and infinite scroll
 
 ## In Progress
-- Category listing page implementation
 - Search functionality frontend & backend
 - Newsletter subscription integration
 - Media optimisation & placeholder loading
@@ -39,8 +39,6 @@
 - Performance optimization for image loading
 
 ## Pending
-- Single post detail page
-- Category listing page
 - Search implementation with PostgreSQL
 - Media handling optimization
 - Newsletter subscription frontend integration

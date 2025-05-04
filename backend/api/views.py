@@ -23,11 +23,11 @@ class PostViewSet(viewsets.ReadOnlyModelViewSet):
     lookup_field = 'slug'
     
     def get_queryset(self):
-        return Post.objects.filter(
-            status='published'
-        ).prefetch_related(
-            'categories', 'tags'
-        )
+        queryset = Post.objects.filter(status='published').prefetch_related('categories', 'tags')
+        category_slug = self.request.query_params.get('category')
+        if category_slug:
+            queryset = queryset.filter(categories__slug=category_slug)
+        return queryset
     
     def get_serializer_class(self):
         if self.action == 'retrieve':

@@ -36,9 +36,9 @@ Now that the homepage, featured posts, infinite scroll, and single-post pages ar
 - Added `next.config.js` with remote image patterns (django & localhost) to fix hostname error
 - Updated Django `ALLOWED_HOSTS` and CORS to include `django`
 - Single post detail page now renders correctly with images
+- Implemented category archive page on frontend with SSR and infinite scroll
 
 ## Next Steps
-- Create category listing/archive page on frontend
 - Implement search (full-text against Postgres) and search UI
 - Add newsletter subscription component
 - Optimize media handling (image optimisation, placeholders)
