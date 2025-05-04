@@ -9,6 +9,9 @@ interface FeaturedPostsProps {
   error: any;
 }
 
+// Generic blur placeholder SVG (10x10 grey)
+const BLUR_PLACEHOLDER = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZGRkIi8+PC9zdmc+';
+
 const FeaturedPosts: React.FC<FeaturedPostsProps> = ({ posts, isLoading, error }) => {
   if (error) {
     return (
@@ -51,6 +54,8 @@ const FeaturedPosts: React.FC<FeaturedPostsProps> = ({ posts, isLoading, error }
                   src={post.featured_image}
                   alt={post.title}
                   fill
+                  placeholder="blur"
+                  blurDataURL={BLUR_PLACEHOLDER}
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />

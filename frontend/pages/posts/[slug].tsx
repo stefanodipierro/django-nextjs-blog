@@ -13,6 +13,9 @@ interface PostPageProps {
   post: Post | null;
 }
 
+// Generic blur placeholder SVG (10x10 grey)
+const BLUR_PLACEHOLDER = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZGRkIi8+PC9zdmc+';
+
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const slug = params?.slug as string;
   const post = await getPost(slug);
@@ -55,7 +58,14 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
 
           {post.featured_image && (
             <div className="relative w-full h-64 md:h-96 mb-8">
-              <Image src={post.featured_image} alt={post.title} fill className="object-cover rounded-lg" />
+              <Image
+                src={post.featured_image}
+                alt={post.title}
+                fill
+                placeholder="blur"
+                blurDataURL={BLUR_PLACEHOLDER}
+                className="object-cover rounded-lg"
+              />
             </div>
           )}
 

@@ -31,6 +31,7 @@
 - Search page implementation with SSR and infinite scroll
 - Search form on homepage for easy access
 - Newsletter subscription form in footer on every page
+- Media optimisation & placeholder loading across components
 
 ## In Progress
 - Search functionality frontend & backend

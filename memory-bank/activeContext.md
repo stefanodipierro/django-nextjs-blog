@@ -42,7 +42,6 @@ Now that the homepage, featured posts, infinite scroll, and single-post pages ar
 - Added newsletter subscription form in the footer on every page
 
 ## Next Steps
-- Optimize media handling (image optimisation, placeholders)
 - Add social sharing buttons on post pages
 - Improve SEO meta tags (OpenGraph, Twitter)
 - Implement caching strategies (SWR revalidation, DRF caching)
