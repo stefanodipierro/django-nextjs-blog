@@ -40,9 +40,9 @@ Now that the homepage, featured posts, infinite scroll, and single-post pages ar
 - Implemented search page on frontend with SSR and infinite scroll (submit-only)
 - Added search form to homepage for easy access to search functionality
 - Added newsletter subscription form in the footer on every page
+- Implemented social sharing buttons on post pages
 
 ## Next Steps
-- Add social sharing buttons on post pages
 - Improve SEO meta tags (OpenGraph, Twitter)
 - Implement caching strategies (SWR revalidation, DRF caching)
 - Set up proper testing framework (Jest + React Testing Library)

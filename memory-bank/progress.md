@@ -32,6 +32,7 @@
 - Search form on homepage for easy access
 - Newsletter subscription form in footer on every page
 - Media optimisation & placeholder loading across components
+- Social sharing buttons on post pages (Twitter, Facebook, LinkedIn)
 
 ## In Progress
 - Search functionality frontend & backend

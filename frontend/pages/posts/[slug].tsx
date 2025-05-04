@@ -8,6 +8,7 @@ import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 // @ts-ignore - type definitions may not exist for remark-gfm but runtime import is fine
+import SocialShare from '../../components/SocialShare';
 
 interface PostPageProps {
   post: Post | null;
@@ -72,6 +73,8 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
           <div className="prose dark:prose-invert max-w-none">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content}</ReactMarkdown>
           </div>
+          {/* Social sharing buttons */}
+          <SocialShare title={post.title} />
         </article>
 
         <div className="mt-12">
