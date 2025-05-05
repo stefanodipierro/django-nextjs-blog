@@ -82,37 +82,76 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
             </div>
           )}
 
-          {/* Side images float alongside content on large screens */}
-          <div className="flow-root mb-8">
-            {post.side_image_1 && (
-              <div className="relative w-full sm:w-1/2 lg:w-1/3 float-left mb-4 sm:mb-6 lg:mr-6 h-48">
-                <Image
-                  src={post.side_image_1}
-                  alt={`${post.title} side image`}
-                  fill
-                  placeholder="blur"
-                  blurDataURL={post.side_image_1_blur || FALLBACK_BLUR_PLACEHOLDER}
-                  className="object-cover rounded-md"
-                  sizes="(max-width: 640px) 100vw, (min-width: 641px) 33vw"
-                />
-              </div>
-            )}
-            {post.side_image_2 && (
-              <div className="relative w-full sm:w-1/2 lg:w-1/3 float-right mb-4 sm:mb-6 lg:ml-6 h-48">
-                <Image
-                  src={post.side_image_2}
-                  alt={`${post.title} side image`}
-                  fill
-                  placeholder="blur"
-                  blurDataURL={post.side_image_2_blur || FALLBACK_BLUR_PLACEHOLDER}
-                  className="object-cover rounded-md"
-                  sizes="(max-width: 640px) 100vw, (min-width: 641px) 33vw"
-                />
-              </div>
-            )}
-            <div className="prose dark:prose-invert max-w-none">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content}</ReactMarkdown>
-            </div>
+          {/* Inject side images after first and second thirds of content */}
+          <div className="mb-8">
+            {(() => {
+              const paragraphs = post.content ? post.content.split('\n\n') : [];
+              const total = paragraphs.length;
+              const firstIndex = Math.ceil(total / 3);
+              const secondIndex = Math.ceil((total * 2) / 3);
+              return (
+                <>
+                  {/* First third of content */}
+                  {paragraphs.slice(0, firstIndex).map((p, idx) => (
+                    <ReactMarkdown
+                      key={`p1-${idx}`}
+                      remarkPlugins={[remarkGfm]}
+                      className="prose dark:prose-invert max-w-none mb-6"
+                    >
+                      {p}
+                    </ReactMarkdown>
+                  ))}
+                  {/* First side image */}
+                  {post.side_image_1 && (
+                    <div className="relative w-full sm:w-1/2 lg:w-1/3 float-left mb-6 lg:mr-6 h-48">
+                      <Image
+                        src={post.side_image_1}
+                        alt={`${post.title} side image`}
+                        fill
+                        placeholder="blur"
+                        blurDataURL={post.side_image_1_blur || FALLBACK_BLUR_PLACEHOLDER}
+                        className="object-cover rounded-md"
+                        sizes="(max-width: 640px) 100vw, (min-width: 641px) 33vw"
+                      />
+                    </div>
+                  )}
+                  {/* Middle third of content */}
+                  {paragraphs.slice(firstIndex, secondIndex).map((p, idx) => (
+                    <ReactMarkdown
+                      key={`p2-${idx}`}
+                      remarkPlugins={[remarkGfm]}
+                      className="prose dark:prose-invert max-w-none mb-6"
+                    >
+                      {p}
+                    </ReactMarkdown>
+                  ))}
+                  {/* Second side image */}
+                  {post.side_image_2 && (
+                    <div className="relative w-full sm:w-1/2 lg:w-1/3 float-right mb-6 lg:ml-6 h-48">
+                      <Image
+                        src={post.side_image_2}
+                        alt={`${post.title} side image`}
+                        fill
+                        placeholder="blur"
+                        blurDataURL={post.side_image_2_blur || FALLBACK_BLUR_PLACEHOLDER}
+                        className="object-cover rounded-md"
+                        sizes="(max-width: 640px) 100vw, (min-width: 641px) 33vw"
+                      />
+                    </div>
+                  )}
+                  {/* Final third of content */}
+                  {paragraphs.slice(secondIndex).map((p, idx) => (
+                    <ReactMarkdown
+                      key={`p3-${idx}`}
+                      remarkPlugins={[remarkGfm]}
+                      className="prose dark:prose-invert max-w-none"
+                    >
+                      {p}
+                    </ReactMarkdown>
+                  ))}
+                </>
+              );
+            })()}
           </div>
           {/* Social sharing buttons */}
           <SocialShare title={post.title} />
