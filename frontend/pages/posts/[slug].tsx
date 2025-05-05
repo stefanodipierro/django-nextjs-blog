@@ -44,12 +44,42 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
         <meta name="description" content={post.excerpt || post.title} />
         <meta property="og:title" content={post.title} />
         <meta property="og:description" content={post.excerpt || post.title} />
-        <meta property="og:image" content={post.featured_image || ''} />
         <meta property="og:url" content={`${SITE_URL}/posts/${post.slug}`} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={post.title} />
         <meta name="twitter:description" content={post.excerpt || post.title} />
-        <meta name="twitter:image" content={post.featured_image || ''} />
+        {/* Dynamic OG images */}
+        {post.featured_image && (
+          <>
+            <meta property="og:image" content={post.featured_image} />
+            <meta property="og:image:alt" content={`${post.title} – Featured Image`} />
+            <meta property="og:image:width" content="1200" />
+            <meta property="og:image:height" content="630" />
+          </>
+        )}
+        {post.side_image_1 && (
+          <>
+            <meta property="og:image" content={post.side_image_1} />
+            <meta property="og:image:alt" content={`${post.title} – Side Image 1`} />
+            <meta property="og:image:width" content="1200" />
+            <meta property="og:image:height" content="630" />
+          </>
+        )}
+        {post.side_image_2 && (
+          <>
+            <meta property="og:image" content={post.side_image_2} />
+            <meta property="og:image:alt" content={`${post.title} – Side Image 2`} />
+            <meta property="og:image:width" content="1200" />
+            <meta property="og:image:height" content="630" />
+          </>
+        )}
+        {/* Twitter picks first available image */}
+        <meta
+          name="twitter:image"
+          content={
+            post.featured_image || post.side_image_1 || post.side_image_2 || ''
+          }
+        />
       </Head>
 
       <main className="container mx-auto px-4 py-12 max-w-3xl">
@@ -82,25 +112,23 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
             </div>
           )}
 
-          {/* Inject side images after first and second thirds of content */}
+          {/* Inject side images after first and second thirds based on content length */}
           <div className="mb-8">
             {(() => {
-              const paragraphs = post.content ? post.content.split('\n\n') : [];
-              const total = paragraphs.length;
-              const firstIndex = Math.ceil(total / 3);
-              const secondIndex = Math.ceil((total * 2) / 3);
+              if (!post.content) return null;
+              const text = post.content;
+              const len = text.length;
+              const firstCut = Math.floor(len / 3);
+              const secondCut = Math.floor((len * 2) / 3);
+              const part1 = text.slice(0, firstCut);
+              const part2 = text.slice(firstCut, secondCut);
+              const part3 = text.slice(secondCut);
               return (
                 <>
-                  {/* First third of content */}
-                  {paragraphs.slice(0, firstIndex).map((p, idx) => (
-                    <ReactMarkdown
-                      key={`p1-${idx}`}
-                      remarkPlugins={[remarkGfm]}
-                      className="prose dark:prose-invert max-w-none mb-6"
-                    >
-                      {p}
-                    </ReactMarkdown>
-                  ))}
+                  {/* First segment */}
+                  <ReactMarkdown remarkPlugins={[remarkGfm]} className="prose dark:prose-invert max-w-none mb-6">
+                    {part1}
+                  </ReactMarkdown>
                   {/* First side image */}
                   {post.side_image_1 && (
                     <div className="relative w-full sm:w-1/2 lg:w-1/3 float-left mb-6 lg:mr-6 h-48">
@@ -115,16 +143,10 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
                       />
                     </div>
                   )}
-                  {/* Middle third of content */}
-                  {paragraphs.slice(firstIndex, secondIndex).map((p, idx) => (
-                    <ReactMarkdown
-                      key={`p2-${idx}`}
-                      remarkPlugins={[remarkGfm]}
-                      className="prose dark:prose-invert max-w-none mb-6"
-                    >
-                      {p}
-                    </ReactMarkdown>
-                  ))}
+                  {/* Second segment */}
+                  <ReactMarkdown remarkPlugins={[remarkGfm]} className="prose dark:prose-invert max-w-none mb-6">
+                    {part2}
+                  </ReactMarkdown>
                   {/* Second side image */}
                   {post.side_image_2 && (
                     <div className="relative w-full sm:w-1/2 lg:w-1/3 float-right mb-6 lg:ml-6 h-48">
@@ -139,16 +161,10 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
                       />
                     </div>
                   )}
-                  {/* Final third of content */}
-                  {paragraphs.slice(secondIndex).map((p, idx) => (
-                    <ReactMarkdown
-                      key={`p3-${idx}`}
-                      remarkPlugins={[remarkGfm]}
-                      className="prose dark:prose-invert max-w-none"
-                    >
-                      {p}
-                    </ReactMarkdown>
-                  ))}
+                  {/* Third segment */}
+                  <ReactMarkdown remarkPlugins={[remarkGfm]} className="prose dark:prose-invert max-w-none">
+                    {part3}
+                  </ReactMarkdown>
                 </>
               );
             })()}
