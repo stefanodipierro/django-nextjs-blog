@@ -19,6 +19,10 @@ export interface Post {
   tags: string[];
   is_featured: boolean;
   blur_data_url?: string | null;
+  side_image_1?: string | null;
+  side_image_2?: string | null;
+  side_image_1_blur?: string | null;
+  side_image_2_blur?: string | null;
 }
 
 interface PostCardProps {

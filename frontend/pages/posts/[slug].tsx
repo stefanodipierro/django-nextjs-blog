@@ -82,8 +82,37 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
             </div>
           )}
 
-          <div className="prose dark:prose-invert max-w-none">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content}</ReactMarkdown>
+          {/* Side images float alongside content on large screens */}
+          <div className="flow-root mb-8">
+            {post.side_image_1 && (
+              <div className="relative w-full sm:w-1/2 lg:w-1/3 float-left mb-4 sm:mb-6 lg:mr-6 h-48">
+                <Image
+                  src={post.side_image_1}
+                  alt={`${post.title} side image`}
+                  fill
+                  placeholder="blur"
+                  blurDataURL={post.side_image_1_blur || FALLBACK_BLUR_PLACEHOLDER}
+                  className="object-cover rounded-md"
+                  sizes="(max-width: 640px) 100vw, (min-width: 641px) 33vw"
+                />
+              </div>
+            )}
+            {post.side_image_2 && (
+              <div className="relative w-full sm:w-1/2 lg:w-1/3 float-right mb-4 sm:mb-6 lg:ml-6 h-48">
+                <Image
+                  src={post.side_image_2}
+                  alt={`${post.title} side image`}
+                  fill
+                  placeholder="blur"
+                  blurDataURL={post.side_image_2_blur || FALLBACK_BLUR_PLACEHOLDER}
+                  className="object-cover rounded-md"
+                  sizes="(max-width: 640px) 100vw, (min-width: 641px) 33vw"
+                />
+              </div>
+            )}
+            <div className="prose dark:prose-invert max-w-none">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content}</ReactMarkdown>
+            </div>
           </div>
           {/* Social sharing buttons */}
           <SocialShare title={post.title} />
