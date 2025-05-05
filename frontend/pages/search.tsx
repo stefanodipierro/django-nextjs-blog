@@ -3,6 +3,7 @@ import { GetServerSideProps } from 'next';
 import { getPosts } from '../lib/api';
 import PostGrid from '../components/PostGrid';
 import { Post } from '../components/PostCard';
+import Head from 'next/head';
 
 interface SearchPageProps {
   initialPosts: Post[];
@@ -14,32 +15,46 @@ const SearchPage: React.FC<SearchPageProps> = ({ initialPosts, initialHasMore, q
   const [query, setQuery] = useState(q);
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Search: "{q}"</h1>
-      <form method="get" action="/search" className="mb-6 flex gap-2">
-        <input
-          type="text"
-          name="q"
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-          placeholder="Search posts..."
-          className="flex-1 px-4 py-2 border border-gray-300 rounded-md"
+    <div className="min-h-screen bg-white dark:bg-gray-900">
+      <Head>
+        <title>Search: {q} | Blog Template</title>
+        <meta name="description" content={`Search results for '${q}' on Blog Template`} />
+      </Head>
+
+      <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-900 dark:text-white truncate">
+          Search: <span className="text-indigo-600 dark:text-indigo-400">"{q}"</span>
+        </h1>
+        
+        <form method="get" action="/search" className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row gap-2">
+            <input
+              type="text"
+              name="q"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              placeholder="Search posts..."
+              className="w-full sm:flex-1 px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              aria-label="Search query"
+            />
+            <button
+              type="submit"
+              className="w-full sm:w-auto px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
+            >
+              Search
+            </button>
+          </div>
+        </form>
+        
+        <PostGrid 
+          initialPosts={initialPosts} 
+          initialHasMore={initialHasMore} 
+          observerThreshold={0.2}
+          pageSize={9}
+          search={q}
         />
-        <button
-          type="submit"
-          className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-        >
-          Search
-        </button>
-      </form>
-      <PostGrid 
-        initialPosts={initialPosts} 
-        initialHasMore={initialHasMore} 
-        observerThreshold={0.2}
-        pageSize={9}
-        search={q}
-      />
-    </main>
+      </main>
+    </div>
   );
 };
 

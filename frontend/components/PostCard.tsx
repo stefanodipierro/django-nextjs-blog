@@ -37,10 +37,11 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
   return (
     <div className={`
       bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-all
-      hover:shadow-lg ${post.is_featured ? 'border-l-4 border-indigo-500' : ''}
+      hover:shadow-lg flex flex-col h-full
+      ${post.is_featured ? 'border-l-4 border-indigo-500' : ''}
     `}>
       {post.featured_image && (
-        <div className="relative h-48 w-full">
+        <div className="relative h-40 sm:h-48 md:h-52 w-full">
           <Image
             src={post.featured_image}
             alt={post.title}
@@ -48,12 +49,12 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
             placeholder="blur"
             blurDataURL={BLUR_PLACEHOLDER}
             className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />
         </div>
       )}
-      <div className="p-5">
-        <div className="flex flex-wrap gap-2 mb-3">
+      <div className="p-3 sm:p-4 md:p-5 flex-1 flex flex-col">
+        <div className="flex flex-wrap gap-1 sm:gap-2 mb-2 sm:mb-3">
           {post.categories.map(category => (
             <Link 
               href={`/category/${category.slug}`} 
@@ -65,19 +66,19 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
           ))}
         </div>
         
-        <Link href={`/posts/${post.slug}`}>
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+        <Link href={`/posts/${post.slug}`} className="group mb-auto">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2">
             {post.title}
           </h2>
         </Link>
 
-        <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
+        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-3 md:mb-4 line-clamp-3">
           {post.excerpt || post.title}
         </p>
 
-        <div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
-          <span>{formattedDate}</span>
-          <span>{post.reading_time} min read</span>
+        <div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400 mt-auto">
+          <span className="text-xs sm:text-xs truncate max-w-[60%]">{formattedDate}</span>
+          <span className="text-xs sm:text-xs">{post.reading_time} min read</span>
         </div>
       </div>
     </div>

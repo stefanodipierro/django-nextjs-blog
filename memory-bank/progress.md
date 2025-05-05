@@ -35,10 +35,10 @@
 - Social sharing buttons on post pages (Twitter, Facebook, LinkedIn)
 - Dynamic OpenGraph and Twitter meta tags on post pages
 - Loading state optimization with skeleton components
+- Responsive design refinement
 
 ## In Progress
 - Testing and refinement of infinite scroll functionality
-- Responsive design refinement
 - Performance optimization for image loading
 
 ## Pending

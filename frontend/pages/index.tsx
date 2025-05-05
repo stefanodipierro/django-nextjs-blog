@@ -76,30 +76,32 @@ const Home: React.FC<HomeProps> = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="container mx-auto px-4 py-12">
-        <header className="mb-16 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+      <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-10 md:py-12">
+        <header className="mb-8 sm:mb-12 md:mb-16 text-center">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-3 md:mb-4">
             Blog Template
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             A modern, minimalist blog built with Django, Next.js, and Tailwind CSS.
           </p>
         </header>
         
         {/* Search form on homepage */}
-        <form method="get" action="/search" className="mb-8 flex justify-center">
-          <input
-            type="text"
-            name="q"
-            placeholder="Search posts..."
-            className="w-1/2 px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none"
-          />
-          <button
-            type="submit"
-            className="px-4 py-2 bg-indigo-600 text-white rounded-r-md hover:bg-indigo-700"
-          >
-            Search
-          </button>
+        <form method="get" action="/search" className="mb-6 sm:mb-8 flex justify-center">
+          <div className="w-full max-w-md sm:max-w-lg md:max-w-xl flex">
+            <input
+              type="text"
+              name="q"
+              placeholder="Search posts..."
+              className="flex-1 px-3 sm:px-4 py-2 text-sm sm:text-base border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            />
+            <button
+              type="submit"
+              className="px-3 sm:px-4 py-2 text-sm sm:text-base bg-indigo-600 text-white rounded-r-md hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
+            >
+              Search
+            </button>
+          </div>
         </form>
         
         <FeaturedPosts 
