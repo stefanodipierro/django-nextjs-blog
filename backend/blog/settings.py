@@ -23,6 +23,11 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', 'django']
 
 # Application definition
 INSTALLED_APPS = [
+    # Admin interface
+    'admin_interface',
+    'colorfield',
+    
+    # Django built-in apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -37,6 +42,7 @@ INSTALLED_APPS = [
     'taggit',
     'django_filters',
     'storages',
+    'django_summernote',
     
     # Local apps
     'posts',
@@ -45,6 +51,7 @@ INSTALLED_APPS = [
     'search',
     'media',
     'api',
+    'utils',
 ]
 
 MIDDLEWARE = [
@@ -158,3 +165,23 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE 
+
+# Summernote configuration
+SUMMERNOTE_CONFIG = {
+    'iframe': True,
+    'summernote': {
+        'width': '100%',
+        'height': '480px',
+        'toolbar': [
+            ['style', ['style']],
+            ['font', ['bold', 'italic', 'underline', 'clear']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['insert', ['link', 'picture', 'video']],
+            ['view', ['fullscreen', 'codeview', 'help']],
+        ],
+    },
+}
+
+# Admin interface theme default
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+SILENCED_SYSTEM_CHECKS = ['security.W019'] 

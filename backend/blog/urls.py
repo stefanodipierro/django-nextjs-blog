@@ -8,6 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include('api.urls')),
     path('markdownx/', include(markdownx_urls)),
+    path('summernote/', include('django_summernote.urls')),
 ]
 
 # Serve media files in development

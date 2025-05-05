@@ -1,10 +1,11 @@
 from django.contrib import admin
 from .models import Post
-from markdownx.admin import MarkdownxModelAdmin
+from django_summernote.admin import SummernoteModelAdmin
 
 
 @admin.register(Post)
-class PostAdmin(MarkdownxModelAdmin):
+class PostAdmin(SummernoteModelAdmin):
+    summernote_fields = ('content',)
     list_display = (
         'title',
         'slug',

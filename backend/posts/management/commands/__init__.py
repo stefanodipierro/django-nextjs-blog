@@ -1,1 +1,1 @@
- 
+"""Commands for posts app.""" 

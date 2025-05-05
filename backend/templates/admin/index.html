@@ -1,0 +1,82 @@
+{% extends "admin/index.html" %}
+{% load i18n admin_extras %}
+
+{% block content %}
+<div class="dashboard-intro" style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <h2 style="color: #1E293B; margin-top: 0;">{% trans 'Welcome to the Blog Admin Dashboard' %}</h2>
+    <p style="margin-bottom: 5px;">{% trans 'Here you can manage all aspects of your blog, including:' %}</p>
+    <ul style="margin-left: 20px;">
+        <li>{% trans 'Posts - Create, edit, and manage blog posts' %}</li>
+        <li>{% trans 'Categories - Organize your content with categories' %}</li>
+        <li>{% trans 'Newsletter - Manage subscribers' %}</li>
+        {# Add Media management if applicable #}
+        {# <li>{% trans 'Media - Upload and manage images and other media files' %}</li> #}
+    </ul>
+</div>
+
+{{ block.super }}
+{% endblock %}
+
+{% block sidebar %}
+{{ block.super }}
+<div class="module" style="margin-top: 20px; background-color: #fff; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <h2>{% trans 'Quick Statistics' %}</h2>
+    <div style="padding: 10px;">
+        <style>
+            .stats-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            .stat-card {
+                padding: 10px;
+                border-radius: 5px;
+                background-color: #f8f9fa;
+                text-align: center;
+            }
+            .stat-value {
+                font-size: 24px;
+                font-weight: bold;
+                color: #2563EB;
+            }
+            .stat-label {
+                font-size: 14px;
+                color: #64748b;
+            }
+        </style>
+
+        <div class="stats-grid">
+            {% get_post_count as post_count %}
+            <div class="stat-card">
+                <div class="stat-value">{{ post_count }}</div>
+                <div class="stat-label">{% trans 'Published Posts' %}</div>
+            </div>
+
+            {% get_category_count as category_count %}
+            <div class="stat-card">
+                <div class="stat-value">{{ category_count }}</div>
+                <div class="stat-label">{% trans 'Categories' %}</div>
+            </div>
+
+            {% get_subscriber_count as subscriber_count %}
+            <div class="stat-card">
+                <div class="stat-value">{{ subscriber_count }}</div>
+                <div class="stat-label">{% trans 'Active Subscribers' %}</div>
+            </div>
+
+            {% get_draft_post_count as draft_count %}
+            <div class="stat-card">
+                <div class="stat-value">{{ draft_count }}</div>
+                <div class="stat-label">{% trans 'Draft Posts' %}</div>
+            </div>
+
+            {# Add Media Count if applicable #}
+            {# {% get_media_count as media_count %} #}
+            {# <div class="stat-card"> #}
+            {#     <div class="stat-value">{{ media_count }}</div> #}
+            {#     <div class="stat-label">{% trans 'Media Files' %}</div> #}
+            {# </div> #}
+        </div>
+    </div>
+</div>
+{% endblock %} 

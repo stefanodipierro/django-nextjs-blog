@@ -1,0 +1,34 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block welcome-msg %}
+    {% trans 'Welcome,' %}
+    <strong>{% firstof user.get_short_name user.get_username %}</strong> |
+    <span class="environment-label" style="padding: 3px 6px; border-radius: 4px; background-color: #2563EB; color: white; font-size: 11px; margin-right: 10px;">
+        {% if request.get_host == 'localhost:8000' or request.get_host == '127.0.0.1:8000' %}
+            DEV
+        {% else %}
+            PROD
+        {% endif %}
+    </span>
+{% endblock %}
+
+{% block userlinks %}
+    <a href="/" class="view-site-link" style="margin-right: 15px; color: #ffffff">
+        <i style="margin-right: 5px;">🔍</i> {% trans 'View Site' %}
+    </a>
+    {{ block.super }}
+{% endblock %}
+
+{% block footer %}
+<div id="footer" style="padding: 20px; text-align: center; font-size: 12px; color: #64748b;">
+    <p>{% trans 'Blog Admin Dashboard' %} &copy; {% now "Y" %}</p>
+    <p style="margin-top: 5px;">
+        {% trans 'Powered by' %} 
+        <a href="https://www.djangoproject.com/" target="_blank" style="color: #2563EB; text-decoration: none;">Django</a>
+        {% trans 'and' %}
+        <a href="https://github.com/fabiocaccamo/django-admin-interface" target="_blank" style="color: #2563EB; text-decoration: none;">django-admin-interface</a>
+    </p>
+</div>
+{{ block.super }}
+{% endblock %} 
