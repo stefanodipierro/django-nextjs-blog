@@ -32,7 +32,13 @@ const SearchPage: React.FC<SearchPageProps> = ({ initialPosts, initialHasMore, q
           Search
         </button>
       </form>
-      <PostGrid initialPosts={initialPosts} initialHasMore={initialHasMore} />
+      <PostGrid 
+        initialPosts={initialPosts} 
+        initialHasMore={initialHasMore} 
+        observerThreshold={0.2}
+        pageSize={9}
+        search={q}
+      />
     </main>
   );
 };

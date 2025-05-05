@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Post } from './PostCard';
+import PostCardSkeleton from './PostCardSkeleton';
 
 interface FeaturedPostsProps {
   posts: Post[];
@@ -16,25 +17,24 @@ const FeaturedPosts: React.FC<FeaturedPostsProps> = ({ posts, isLoading, error }
   if (error) {
     return (
       <div className="bg-red-50 dark:bg-red-900 p-4 rounded-lg text-red-800 dark:text-red-200 mb-8">
-        <p>Error loading featured posts. Please try again later.</p>
+        <p>Error loading featured posts: {error.message}</p>
       </div>
     );
   }
 
-  if (isLoading) {
+  if (isLoading && (!posts || posts.length === 0)) {
     return (
-      <div className="mb-12">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">Featured Posts</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="bg-gray-200 dark:bg-gray-800 rounded-lg h-64 animate-pulse"></div>
-          ))}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Featured Posts</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <PostCardSkeleton />
+          <PostCardSkeleton />
         </div>
-      </div>
+      </section>
     );
   }
 
-  if (!Array.isArray(posts) || posts.length === 0) {
+  if (!posts || posts.length === 0) {
     return null;
   }
 

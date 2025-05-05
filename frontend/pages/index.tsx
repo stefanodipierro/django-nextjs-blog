@@ -110,7 +110,9 @@ const Home: React.FC<HomeProps> = ({
         
         <PostGrid 
           initialPosts={initialPosts} 
-          initialHasMore={initialHasMore} 
+          initialHasMore={initialHasMore}
+          observerThreshold={0.2}
+          pageSize={9} 
         />
       </main>
     </div>

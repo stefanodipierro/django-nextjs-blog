@@ -33,20 +33,17 @@
 - Newsletter subscription form in footer on every page
 - Media optimisation & placeholder loading across components
 - Social sharing buttons on post pages (Twitter, Facebook, LinkedIn)
+- Dynamic OpenGraph and Twitter meta tags on post pages
+- Loading state optimization with skeleton components
 
 ## In Progress
-- Search functionality frontend & backend
-- Media optimisation & placeholder loading
 - Testing and refinement of infinite scroll functionality
-- Loading state optimization
 - Responsive design refinement
 - Performance optimization for image loading
 
 ## Pending
 - Search implementation with PostgreSQL
 - Media handling optimization
-- Newsletter subscription frontend integration
-- Social sharing functionality
 - Advanced admin customization for better content management
 - Production deployment configuration
 - Frontend caching optimizations

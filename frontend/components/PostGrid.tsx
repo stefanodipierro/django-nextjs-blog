@@ -1,18 +1,31 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import PostCard, { Post } from './PostCard';
+import PostSkeletonGrid from './PostSkeletonGrid';
 import { getPosts } from '../lib/api';
 
 interface PostGridProps {
   initialPosts: Post[];
   initialHasMore: boolean;
+  observerThreshold?: number;
+  pageSize?: number;
+  category?: string;
+  search?: string;
 }
 
-const PostGrid: React.FC<PostGridProps> = ({ initialPosts, initialHasMore }) => {
+const PostGrid: React.FC<PostGridProps> = ({ 
+  initialPosts, 
+  initialHasMore, 
+  observerThreshold = 0.1,
+  pageSize = 9,
+  category,
+  search
+}) => {
   const [posts, setPosts] = useState<Post[]>(initialPosts || []);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(initialHasMore);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const [reachedEnd, setReachedEnd] = useState(!initialHasMore);
   
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadingRef = useRef<HTMLDivElement | null>(null);
@@ -25,20 +38,39 @@ const PostGrid: React.FC<PostGridProps> = ({ initialPosts, initialHasMore }) => 
     
     try {
       const nextPage = page + 1;
-      const result = await getPosts(nextPage);
+      const result = await getPosts(nextPage, pageSize, category, search);
+      
+      if (result.posts.length === 0) {
+        setHasMore(false);
+        setReachedEnd(true);
+        return;
+      }
       
       setPage(nextPage);
       setPosts(prevPosts => [...prevPosts, ...result.posts]);
       setHasMore(result.hasMore);
+      
+      if (!result.hasMore) {
+        setReachedEnd(true);
+      }
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Failed to load posts'));
     } finally {
       setIsLoading(false);
     }
-  }, [hasMore, isLoading, page]);
+  }, [hasMore, isLoading, page, pageSize, category, search]);
   
+  const cleanupObserver = useCallback(() => {
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+      observerRef.current = null;
+    }
+  }, []);
+
   useEffect(() => {
     if (!loadingRef.current) return;
+    
+    cleanupObserver();
     
     observerRef.current = new IntersectionObserver(
       entries => {
@@ -46,17 +78,13 @@ const PostGrid: React.FC<PostGridProps> = ({ initialPosts, initialHasMore }) => 
           loadMorePosts();
         }
       },
-      { threshold: 0.1 }
+      { threshold: observerThreshold }
     );
     
     observerRef.current.observe(loadingRef.current);
     
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
-    };
-  }, [hasMore, isLoading, loadMorePosts]);
+    return cleanupObserver;
+  }, [hasMore, isLoading, loadMorePosts, observerThreshold, cleanupObserver]);
   
   if (error) {
     return (
@@ -90,18 +118,26 @@ const PostGrid: React.FC<PostGridProps> = ({ initialPosts, initialHasMore }) => 
         ))}
       </div>
       
-      {hasMore && (
+      {hasMore ? (
         <div 
           ref={loadingRef} 
-          className="text-center py-8"
+          className="py-8"
         >
           {isLoading ? (
-            <div className="flex justify-center items-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
-              <span className="ml-2 text-gray-600 dark:text-gray-400">Loading more posts...</span>
+            <div>
+              <div className="mb-4 text-center text-gray-600 dark:text-gray-400">
+                <span>Loading more posts...</span>
+              </div>
+              <PostSkeletonGrid count={3} />
             </div>
           ) : (
             <div className="h-8 w-full"></div>
+          )}
+        </div>
+      ) : (
+        <div className="text-center py-8 text-gray-600 dark:text-gray-400">
+          {reachedEnd && posts.length > 0 && (
+            <p>You've reached the end! No more posts to load.</p>
           )}
         </div>
       )}

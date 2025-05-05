@@ -17,6 +17,8 @@ interface PostPageProps {
 // Generic blur placeholder SVG (10x10 grey)
 const BLUR_PLACEHOLDER = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZGRkIi8+PC9zdmc+';
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const slug = params?.slug as string;
   const post = await getPost(slug);
@@ -40,6 +42,14 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
       <Head>
         <title>{post.title}</title>
         <meta name="description" content={post.excerpt || post.title} />
+        <meta property="og:title" content={post.title} />
+        <meta property="og:description" content={post.excerpt || post.title} />
+        <meta property="og:image" content={post.featured_image || ''} />
+        <meta property="og:url" content={`${SITE_URL}/posts/${post.slug}`} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={post.title} />
+        <meta name="twitter:description" content={post.excerpt || post.title} />
+        <meta name="twitter:image" content={post.featured_image || ''} />
       </Head>
 
       <main className="container mx-auto px-4 py-12 max-w-3xl">

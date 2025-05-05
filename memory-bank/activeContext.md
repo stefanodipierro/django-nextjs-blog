@@ -41,6 +41,7 @@ Now that the homepage, featured posts, infinite scroll, and single-post pages ar
 - Added search form to homepage for easy access to search functionality
 - Added newsletter subscription form in the footer on every page
 - Implemented social sharing buttons on post pages
+- Added dynamic OpenGraph and Twitter meta tags on post pages
 
 ## Next Steps
 - Improve SEO meta tags (OpenGraph, Twitter)
