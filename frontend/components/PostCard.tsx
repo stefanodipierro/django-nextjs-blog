@@ -18,14 +18,15 @@ export interface Post {
   }[];
   tags: string[];
   is_featured: boolean;
+  blur_data_url?: string | null;
 }
 
 interface PostCardProps {
   post: Post;
 }
 
-// Generic blur placeholder SVG (10x10 grey)
-const BLUR_PLACEHOLDER = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZGRkIi8+PC9zdmc+';
+// Generic blur placeholder SVG (10x10 grey) as fallback
+const FALLBACK_BLUR_PLACEHOLDER = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZGRkIi8+PC9zdmc+';
 
 const PostCard: React.FC<PostCardProps> = ({ post }) => {
   const formattedDate = new Date(post.published_at).toLocaleDateString('en-US', {
@@ -33,6 +34,9 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
     month: 'long',
     day: 'numeric',
   });
+
+  // Use the dynamic blur data URL if available, otherwise fall back to the static one
+  const blurDataURL = post.blur_data_url || FALLBACK_BLUR_PLACEHOLDER;
 
   return (
     <div className={`
@@ -47,7 +51,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
             alt={post.title}
             fill
             placeholder="blur"
-            blurDataURL={BLUR_PLACEHOLDER}
+            blurDataURL={blurDataURL}
             className="object-cover"
             sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
           />

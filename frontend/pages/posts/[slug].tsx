@@ -14,8 +14,8 @@ interface PostPageProps {
   post: Post | null;
 }
 
-// Generic blur placeholder SVG (10x10 grey)
-const BLUR_PLACEHOLDER = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZGRkIi8+PC9zdmc+';
+// Generic blur placeholder SVG (10x10 grey) as fallback
+const FALLBACK_BLUR_PLACEHOLDER = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZGRkIi8+PC9zdmc+';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
@@ -73,9 +73,11 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
                 src={post.featured_image}
                 alt={post.title}
                 fill
+                priority
                 placeholder="blur"
-                blurDataURL={BLUR_PLACEHOLDER}
-                className="object-cover rounded-lg"
+                blurDataURL={post.blur_data_url || FALLBACK_BLUR_PLACEHOLDER}
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 1200px"
               />
             </div>
           )}

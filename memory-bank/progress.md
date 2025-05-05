@@ -36,10 +36,10 @@
 - Dynamic OpenGraph and Twitter meta tags on post pages
 - Loading state optimization with skeleton components
 - Responsive design refinement
+- Performance optimization for image loading with dynamic blur placeholders
 
 ## In Progress
 - Testing and refinement of infinite scroll functionality
-- Performance optimization for image loading
 
 ## Pending
 - Search implementation with PostgreSQL

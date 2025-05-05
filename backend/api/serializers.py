@@ -3,6 +3,7 @@ from posts.models import Post
 from categories.models import Category
 from newsletter.models import Subscriber
 from taggit.serializers import TagListSerializerField
+from utils.image_utils import generate_blur_placeholder
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -15,27 +16,42 @@ class PostListSerializer(serializers.ModelSerializer):
     categories = CategorySerializer(many=True, read_only=True)
     tags = TagListSerializerField()
     reading_time = serializers.IntegerField(read_only=True)
+    blur_data_url = serializers.SerializerMethodField()
     
     class Meta:
         model = Post
         fields = [
             'id', 'title', 'slug', 'excerpt', 'featured_image',
-            'published_at', 'categories', 'tags', 'reading_time', 'is_featured'
+            'published_at', 'categories', 'tags', 'reading_time', 'is_featured',
+            'blur_data_url'
         ]
+    
+    def get_blur_data_url(self, obj):
+        """Generate a blur data URL for the featured image"""
+        if not obj.featured_image:
+            return None
+        return generate_blur_placeholder(obj.featured_image.url)
 
 
 class PostDetailSerializer(serializers.ModelSerializer):
     categories = CategorySerializer(many=True, read_only=True)
     tags = TagListSerializerField()
     reading_time = serializers.IntegerField(read_only=True)
+    blur_data_url = serializers.SerializerMethodField()
     
     class Meta:
         model = Post
         fields = [
             'id', 'title', 'slug', 'content', 'excerpt', 'featured_image',
             'created_at', 'updated_at', 'published_at', 'categories', 
-            'tags', 'reading_time', 'is_featured'
+            'tags', 'reading_time', 'is_featured', 'blur_data_url'
         ]
+    
+    def get_blur_data_url(self, obj):
+        """Generate a blur data URL for the featured image"""
+        if not obj.featured_image:
+            return None
+        return generate_blur_placeholder(obj.featured_image.url)
 
 
 class SubscriberSerializer(serializers.ModelSerializer):
