@@ -85,4 +85,28 @@ For production deployment:
 
 ## License
 
-[MIT License](LICENSE) 
+[MIT License](LICENSE)
+
+## SEO & Social Media Meta Tags
+
+This project dynamically generates OpenGraph and Twitter meta tags for each post, ensuring optimal social previews and SEO:
+
+- **OpenGraph Images:**
+  - Includes `<meta property="og:image">` entries for the featured image, side image 1, and side image 2 (if provided).
+  - Adds `og:image:alt`, `og:image:width`, and `og:image:height` tags for each image (1200x630 px recommended).
+- **Twitter Cards:**
+  - Uses `twitter:card` = `summary_large_image`.
+  - Picks the first available image among featured, side 1, and side 2 for `<meta name="twitter:image">`.
+- **Canonical URL:**
+  - Adds `<link rel="canonical">` pointing to the full post URL.
+- **Schema.org JSON-LD:**
+  - Injects an `Article` schema block with:
+    - `headline`, `description`, `datePublished`
+    - `image` (array of all provided images)
+    - `mainEntityOfPage` (the post URL)
+
+### Validation & Testing
+
+- Use Facebook OpenGraph Debugger (https://developers.facebook.com/tools/debug/) to confirm OG tags.
+- Use Twitter Card Validator (https://cards-dev.twitter.com/validator) for Twitter cards.
+- Run Lighthouse or other SEO audit tools to ensure meta-tag coverage. 

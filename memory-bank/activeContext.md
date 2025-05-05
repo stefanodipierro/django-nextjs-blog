@@ -1,7 +1,7 @@
 # Active Context
 
 ## Current Focus
-The current focus is on UX polishing, specifically completing the remaining phases for side images in posts. We have successfully completed Phase 1 (Footer Newsletter Input Styling) and Phase 2 (Add Side Image Fields to Backend).
+The current focus has shifted to post-deployment validation and documentation of SEO enhancements.
 
 ## Recent Changes
 - Fixed Docker environment issues including container configuration
@@ -81,8 +81,18 @@ The current focus is on UX polishing, specifically completing the remaining phas
   - Enhanced serializers to include side images in API responses
   - Added blur data URL generation for side images
   - Created and applied database migrations
+- Added canonical URL tag for posts
+- Injected JSON-LD schema for `Article` with headline, description, publish date, and image array
+- Implemented dynamic OpenGraph meta tags for featured and side images, including alt and dimension tags
 
 ## Next Steps
+- Phase 4: Manual Testing & Validation
+  - Verify all OG tags with Facebook OpenGraph Debugger
+  - Validate Twitter cards with Twitter Card Validator
+  - Run Lighthouse or SEO audit tools for meta tag coverage
+- Phase 5: Documentation & CI
+  - Document SEO meta-tag strategy in repository README or docs folder
+  - Optionally write a simple CI test to assert presence of key meta tags in rendered HTML
 - Implement UX polishing:
   - ✅ Phase 1: Footer Newsletter Input Styling - Match width to search bar and align properly
   - ✅ Phase 2: Add Side Image Fields to Backend - Create additional image fields in Post model
