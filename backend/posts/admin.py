@@ -26,7 +26,6 @@ class PostAdmin(SummernoteModelAdmin):
         }),
         ('Images', {
             'fields': ('featured_image', 'side_image_1', 'side_image_2'),
-            'classes': ('collapse',),
         }),
         ('Publication', {
             'fields': ('status', 'is_featured', 'published_at', 'categories', 'tags')
