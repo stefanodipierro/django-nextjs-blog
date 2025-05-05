@@ -1,75 +1,48 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useRef } from 'react';
 import PostCard, { Post } from './PostCard';
 import PostSkeletonGrid from './PostSkeletonGrid';
-import { getPosts } from '../lib/api';
+import usePosts from '../hooks/usePosts';
 import useIntersectionObserver from './useIntersectionObserver';
 
-interface PostGridProps {
+interface EnhancedPostGridProps {
   initialPosts: Post[];
   initialHasMore: boolean;
   observerThreshold?: number;
   pageSize?: number;
   category?: string;
   search?: string;
+  title?: string;
 }
 
-const PostGrid: React.FC<PostGridProps> = ({ 
-  initialPosts, 
-  initialHasMore, 
+const EnhancedPostGrid: React.FC<EnhancedPostGridProps> = ({
+  initialPosts,
+  initialHasMore,
   observerThreshold = 0.1,
   pageSize = 9,
   category,
-  search
+  search,
+  title = 'Latest Posts'
 }) => {
-  const [posts, setPosts] = useState<Post[]>(initialPosts || []);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(initialHasMore);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-  const [reachedEnd, setReachedEnd] = useState(!initialHasMore);
-  
-  const loadingRef = useRef<HTMLDivElement>(null);
-  const isLoadingRef = useRef(isLoading);
-  
-  // Keep isLoadingRef in sync with isLoading state
-  useEffect(() => {
-    isLoadingRef.current = isLoading;
-  }, [isLoading]);
-  
-  const loadMorePosts = useCallback(async () => {
-    // Use ref to prevent race conditions between state updates and function calls
-    if (!hasMore || isLoadingRef.current) return;
-    
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-      const nextPage = page + 1;
-      const result = await getPosts(nextPage, pageSize, category, search);
-      
-      // Check if we received any new posts
-      if (!result.posts || result.posts.length === 0) {
-        setHasMore(false);
-        setReachedEnd(true);
-        return;
-      }
-      
-      setPage(nextPage);
-      setPosts(prevPosts => [...prevPosts, ...result.posts]);
-      setHasMore(result.hasMore);
-      
-      // If this was the last page, mark that we've reached the end
-      if (!result.hasMore) {
-        setReachedEnd(true);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to load posts'));
-    } finally {
-      setIsLoading(false);
-    }
-  }, [hasMore, page, pageSize, category, search]);
+  // Use custom hook to manage posts state
+  const {
+    posts,
+    isLoading,
+    error,
+    hasMore,
+    reachedEnd,
+    loadMorePosts
+  } = usePosts({
+    initialPosts,
+    initialHasMore,
+    pageSize,
+    category,
+    search
+  });
 
-  // Use our custom hook to handle intersection observation
+  // Reference for the loading element
+  const loadingRef = useRef<HTMLDivElement>(null);
+  
+  // Use custom hook for intersection observer
   const { observe } = useIntersectionObserver({
     threshold: observerThreshold,
     enabled: hasMore && !isLoading,
@@ -77,12 +50,13 @@ const PostGrid: React.FC<PostGridProps> = ({
   });
   
   // Connect the loading element with the observer
-  useEffect(() => {
+  React.useEffect(() => {
     if (loadingRef.current) {
       observe(loadingRef.current);
     }
-  }, [observe, hasMore, isLoading]); 
+  }, [observe]);
   
+  // Error state - the user can retry loading
   if (error) {
     return (
       <div className="bg-red-50 dark:bg-red-900 p-4 rounded-lg text-red-800 dark:text-red-200 mb-8">
@@ -97,6 +71,7 @@ const PostGrid: React.FC<PostGridProps> = ({
     );
   }
   
+  // Empty state
   if (!Array.isArray(posts) || posts.length === 0) {
     return (
       <div className="text-center py-12 text-gray-600 dark:text-gray-400">
@@ -105,9 +80,10 @@ const PostGrid: React.FC<PostGridProps> = ({
     );
   }
   
+  // Normal state with posts
   return (
     <section data-testid="post-grid">
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">Latest Posts</h2>
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">{title}</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {posts.map(post => (
@@ -118,7 +94,7 @@ const PostGrid: React.FC<PostGridProps> = ({
       {hasMore ? (
         <div 
           ref={loadingRef} 
-          className="py-8"
+          className="py-8 min-h-20"
           data-testid="loading-trigger"
         >
           {isLoading ? (
@@ -143,4 +119,4 @@ const PostGrid: React.FC<PostGridProps> = ({
   );
 };
 
-export default PostGrid; 
+export default EnhancedPostGrid; 

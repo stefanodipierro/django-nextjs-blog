@@ -37,9 +37,9 @@
 - Loading state optimization with skeleton components
 - Responsive design refinement
 - Performance optimization for image loading with dynamic blur placeholders
+- Testing and refinement of infinite scroll functionality with custom hooks
 
 ## In Progress
-- Testing and refinement of infinite scroll functionality
 
 ## Pending
 - Search implementation with PostgreSQL
