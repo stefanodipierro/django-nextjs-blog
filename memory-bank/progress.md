@@ -59,8 +59,22 @@
   - Resolved static file collision warnings
   - Corrected PowerShell command syntax for cross-platform compatibility
   - Implemented proper Docker container rebuilding workflow
+- Created cross-platform compatible Docker workflow that works on both Windows and Linux
+- UX enhancements - Phase 1:
+  - Improved newsletter form styling in footer
+  - Matched width to search bar and aligned properly
+  - Positioned header directly above form with proper alignment
+  - Enhanced responsive behavior across different screen sizes
+- UX enhancements - Phase 2:
+  - Added side_image_1 and side_image_2 fields to Post model
+  - Created organized fieldsets in PostAdmin
+  - Updated serializers to include side images in API responses
+  - Generated blur data URLs for side images
+  - Applied database migrations
 
 ## In Progress
+- UX polishing enhancements:
+  - Side images for post content (Phase 3)
 - GitHub repository setup and initial commits
 - Django Admin enhancements - Phase 3 (Import/Export functionality)
 
@@ -94,6 +108,11 @@ The admin interface has been significantly enhanced with:
 5. Enhanced model admin classes for better content management
 6. Functional admin dashboard with accurate content statistics via custom template tags
 7. Clear environment indicator (DEV/PROD badge) for distinguishing environments
+
+We are now focusing on UX polishing tasks to improve the overall reading experience and visual design:
+1. ✅ Restyled the footer newsletter input to match the search bar width and improve alignment
+2. ✅ Added support for side images in post content (backend implementation)
+3. Next: Implementing frontend display of side images that float beside text on larger screens
 
 ## Known Issues
 - Need to improve error handling in API views

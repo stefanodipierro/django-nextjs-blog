@@ -16,6 +16,10 @@ class Post(models.Model):
     content = MarkdownxField()
     excerpt = models.TextField(blank=True)
     featured_image = models.ImageField(upload_to='posts/%Y/%m/%d/', blank=True, null=True)
+    side_image_1 = models.ImageField(upload_to='posts/side_images/', blank=True, null=True, 
+                                    help_text="Optional image to float left of content on large screens.")
+    side_image_2 = models.ImageField(upload_to='posts/side_images/', blank=True, null=True,
+                                    help_text="Optional image to float right of content on large screens.")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     published_at = models.DateTimeField(default=timezone.now)
