@@ -2,17 +2,22 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import FeaturedPosts from '../components/FeaturedPosts';
 import PostGrid from '../components/PostGrid';
-import { getFeaturedPosts, getPosts } from '../lib/api';
+import HeroSection from '../components/HeroSection';
+import { getFeaturedPosts, getPosts, getActiveTheme, ThemeData } from '../lib/api';
 import { Post } from '../components/PostCard';
 
 interface HomeProps {
   initialFeaturedPosts: Post[];
   initialPosts: Post[];
   initialHasMore: boolean;
+  initialTheme: ThemeData | null;
 }
 
 export async function getServerSideProps() {
   try {
+    // Fetch theme data for hero section
+    const theme = await getActiveTheme();
+    
     // Fetch featured posts
     const featuredPosts = await getFeaturedPosts();
     
@@ -21,6 +26,7 @@ export async function getServerSideProps() {
     
     return {
       props: {
+        initialTheme: theme,
         initialFeaturedPosts: featuredPosts || [],
         initialPosts: posts || [],
         initialHasMore: hasMore || false,
@@ -30,6 +36,7 @@ export async function getServerSideProps() {
     console.error('Error fetching initial data:', error);
     return {
       props: {
+        initialTheme: null,
         initialFeaturedPosts: [],
         initialPosts: [],
         initialHasMore: false,
@@ -41,11 +48,18 @@ export async function getServerSideProps() {
 const Home: React.FC<HomeProps> = ({ 
   initialFeaturedPosts, 
   initialPosts, 
-  initialHasMore 
+  initialHasMore,
+  initialTheme
 }) => {
   const [featuredPosts, setFeaturedPosts] = useState<Post[]>(initialFeaturedPosts);
   const [isLoadingFeatured, setIsLoadingFeatured] = useState(false);
   const [featuredError, setFeaturedError] = useState<Error | null>(null);
+  const [theme, setTheme] = useState<ThemeData | null>(initialTheme);
+  const [isLoadingTheme, setIsLoadingTheme] = useState(false);
+  
+  // Blog title and subtitle - can be moved to configuration or CMS later
+  const blogTitle = "Blog Template";
+  const blogSubtitle = "A modern, minimalist blog built with Django, Next.js, and Tailwind CSS.";
   
   // Refetch featured posts on client-side for fresh data
   useEffect(() => {
@@ -65,8 +79,25 @@ const Home: React.FC<HomeProps> = ({
       }
     };
     
+    // Refetch theme data if not available from SSR
+    const fetchThemeData = async () => {
+      if (initialTheme) return; // Skip if we already have data from SSR
+      
+      setIsLoadingTheme(true);
+      
+      try {
+        const data = await getActiveTheme();
+        setTheme(data);
+      } catch (error) {
+        console.error('Failed to load theme data:', error);
+      } finally {
+        setIsLoadingTheme(false);
+      }
+    };
+    
     fetchFeaturedPosts();
-  }, [initialFeaturedPosts.length]);
+    fetchThemeData();
+  }, [initialFeaturedPosts.length, initialTheme]);
   
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
@@ -74,17 +105,26 @@ const Home: React.FC<HomeProps> = ({
         <title>Blog Template</title>
         <meta name="description" content="A modern blog template built with Next.js and Django" />
         <link rel="icon" href="/favicon.ico" />
+        
+        {/* OpenGraph meta tags for hero image */}
+        {theme?.hero_image && (
+          <>
+            <meta property="og:image" content={theme.hero_image} />
+            <meta property="og:image:alt" content={theme.hero_image_alt || blogTitle} />
+            <meta property="og:image:width" content="1200" />
+            <meta property="og:image:height" content="630" />
+          </>
+        )}
       </Head>
 
       <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-10 md:py-12">
-        <header className="mb-8 sm:mb-12 md:mb-16 text-center">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-3 md:mb-4">
-            Blog Template
-          </h1>
-          <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            A modern, minimalist blog built with Django, Next.js, and Tailwind CSS.
-          </p>
-        </header>
+        {/* Hero Section */}
+        <HeroSection 
+          theme={theme} 
+          title={blogTitle} 
+          subtitle={blogSubtitle} 
+          isLoading={isLoadingTheme} 
+        />
         
         {/* Search form on homepage */}
         <form method="get" action="/search" className="mb-6 sm:mb-8 flex justify-center">

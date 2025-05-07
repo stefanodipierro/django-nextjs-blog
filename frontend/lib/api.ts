@@ -9,6 +9,17 @@ const API_URL = isServer
   : process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
 
 /**
+ * Theme data interface for hero section
+ */
+export interface ThemeData {
+  id: number;
+  theme_name: string;
+  hero_image: string | null;
+  hero_image_alt: string;
+  hero_box_color: string;
+}
+
+/**
  * Fetches featured posts from the API
  */
 export async function getFeaturedPosts(): Promise<Post[]> {
@@ -25,6 +36,32 @@ export async function getFeaturedPosts(): Promise<Post[]> {
   } catch (error) {
     console.error('Error fetching featured posts:', error);
     return [];
+  }
+}
+
+/**
+ * Fetches the active theme with hero image data from the API
+ */
+export async function getActiveTheme(): Promise<ThemeData | null> {
+  try {
+    const response = await fetch(`${API_URL}/theme/`);
+    if (!response.ok) {
+      throw new Error(`Error fetching theme data: ${response.status}`);
+    }
+    
+    // Parse and transform hero_image to full URL for remote loading
+    const data = (await response.json()) as ThemeData;
+    if (data.hero_image && !/^https?:\/\//i.test(data.hero_image)) {
+      // Derive origin by removing '/api/v1' from API_URL
+      const origin = isServer
+        ? (process.env.NEXT_PUBLIC_INTERNAL_API_URL || 'http://django:8000').replace(/\/api\/v1\/?$/, '')
+        : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000').replace(/\/api\/v1\/?$/, '');
+      data.hero_image = `${origin}${data.hero_image}`;
+    }
+    return data;
+  } catch (error) {
+    console.error('Error fetching theme data:', error);
+    return null;
   }
 }
 

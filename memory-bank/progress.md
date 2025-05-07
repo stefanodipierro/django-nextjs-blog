@@ -71,12 +71,24 @@
   - Updated serializers to include side images in API responses
   - Generated blur data URLs for side images
   - Applied database migrations
+- SEO & Social Media enhancements:
+  - Dynamic OpenGraph meta tags for featured and side images (with alt, width, height)
+  - Added canonical URL tag
+  - Injected Article JSON-LD schema with headline, description, date, and images array
+- GitHub repository setup and initial commits
+- UX polishing enhancements:
+  - Phase 1: Improved footer newsletter styling ✅
+  - Phase 2: Added side image fields to backend ✅
+  - Phase 3: Implemented side image rendering on frontend ✅
+- Django Admin enhancements - Phase 3 (Import/Export functionality)
+  - Integrated django-import-export for Post model
+  - Tested import and export functionality
+- SEO validation & documentation:
+  - Phase 4: Manual Testing & Validation of meta tags (Lighthouse + Platform Tools) ✅
+  - Phase 5: Documented SEO strategy and set up basic CI checks ✅
+- Implemented homepage hero section with theme-managed hero image, HeroSection component, and SEO meta tags
 
 ## In Progress
-- UX polishing enhancements:
-  - Side images for post content (Phase 3)
-- GitHub repository setup and initial commits
-- Django Admin enhancements - Phase 3 (Import/Export functionality)
 
 ## Pending
 - Django Admin enhancements - Phase 4 (Integration & Polish)
@@ -112,7 +124,9 @@ The admin interface has been significantly enhanced with:
 We are now focusing on UX polishing tasks to improve the overall reading experience and visual design:
 1. ✅ Restyled the footer newsletter input to match the search bar width and improve alignment
 2. ✅ Added support for side images in post content (backend implementation)
-3. Next: Implementing frontend display of side images that float beside text on larger screens
+3. ✅ Implemented frontend display of side images that float beside text on larger screens
+
+SEO meta tags have been implemented and validated using Lighthouse and manual checks with platform-specific tools. Basic documentation and CI checks for SEO are also complete.
 
 ## Known Issues
 - Need to improve error handling in API views
