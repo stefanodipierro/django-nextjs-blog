@@ -20,7 +20,7 @@ export default function useIntersectionObserver({
   onIntersect
 }: UseIntersectionObserverOptions = {}) {
   const [isIntersecting, setIsIntersecting] = useState(false);
-  const [entry, setEntry] = useState<IntersectionObserverEntry | null>(null);
+  const [_entry, setEntry] = useState<IntersectionObserverEntry | null>(null);
   
   // Use refs to avoid recreating the observer unnecessarily
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -86,7 +86,7 @@ export default function useIntersectionObserver({
   
   return {
     isIntersecting,
-    entry,
+    entry: _entry,
     observe,
     unobserve: cleanup,
   };

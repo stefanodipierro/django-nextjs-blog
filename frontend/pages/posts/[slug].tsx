@@ -7,7 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-// @ts-ignore - type definitions may not exist for remark-gfm but runtime import is fine
+// @ts-expect-error - type definitions may not exist for remark-gfm but runtime import is fine
 import SocialShare from '../../components/SocialShare';
 
 interface PostPageProps {

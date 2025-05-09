@@ -111,7 +111,7 @@ const EnhancedPostGrid: React.FC<EnhancedPostGridProps> = ({
       ) : (
         <div className="text-center py-8 text-gray-600 dark:text-gray-400">
           {reachedEnd && posts.length > 0 && (
-            <p data-testid="end-message">You've reached the end! No more posts to load.</p>
+            <p data-testid="end-message">You&apos;ve reached the end! No more posts to load.</p>
           )}
         </div>
       )}

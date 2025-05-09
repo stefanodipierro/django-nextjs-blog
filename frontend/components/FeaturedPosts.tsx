@@ -7,7 +7,7 @@ import PostCardSkeleton from './PostCardSkeleton';
 interface FeaturedPostsProps {
   posts: Post[];
   isLoading: boolean;
-  error: any;
+  error: Error | null;
 }
 
 // Generic blur placeholder SVG (10x10 grey) as fallback

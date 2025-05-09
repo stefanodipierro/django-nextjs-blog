@@ -15,9 +15,13 @@ const NewsletterForm: React.FC = () => {
       setStatus('success');
       setMessage('Thank you for subscribing!');
       setEmail('');
-    } catch (err: any) {
+    } catch (err: unknown) {
       setStatus('error');
-      setMessage(err.message || 'Subscription failed.');
+      if (err instanceof Error) {
+        setMessage(err.message);
+      } else {
+        setMessage('Subscription failed.');
+      }
     }
   };
 

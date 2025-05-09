@@ -18,6 +18,10 @@ const LOG_LEVELS = {
 // Default to INFO level in development, ERROR in production
 const DEFAULT_LOG_LEVEL = process.env.NODE_ENV === 'development' ? LOG_LEVELS.INFO : LOG_LEVELS.ERROR;
 
+// Initialize observer tracking variables at module level
+let observerCount = 0;
+let activeObservers = new Map();
+
 /**
  * Monkey patch IntersectionObserver for testing and debugging
  * @param {Object} options - Configuration options
@@ -57,9 +61,6 @@ export function setupIntersectionObserverTest({
       }
     }
   };
-  
-  let observerCount = 0;
-  let activeObservers = new Map();
   
   class MockIntersectionObserver {
     constructor(callback, options = {}) {
