@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     'media',
     'api',
     'utils',
+    # Theme extension app
+    'themes',
 ]
 
 MIDDLEWARE = [

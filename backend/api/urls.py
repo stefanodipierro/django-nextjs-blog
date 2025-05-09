@@ -12,8 +12,8 @@ router.register(r'categories', CategoryViewSet, basename='category')
 
 # API patterns without the v1/ prefix (it's already added in the main urls.py)
 urlpatterns = [
-    path('posts/', include(router.urls)),
-    path('categories/', include(router.urls)),
+    # Include router urls at root for posts and categories
+    path('', include(router.urls)),
     path('featured-posts/', FeaturedPostsAPIView.as_view(), name='featured-posts'),
     path('subscribe/', SubscriberCreateAPIView.as_view(), name='newsletter-subscribe'),
     path('theme/', active_theme, name='active-theme'),

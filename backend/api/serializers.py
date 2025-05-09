@@ -4,6 +4,7 @@ from categories.models import Category
 from newsletter.models import Subscriber
 from taggit.serializers import TagListSerializerField
 from utils.image_utils import generate_blur_placeholder
+from themes.models import ExtendedTheme
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -75,4 +76,15 @@ class SubscriberSerializer(serializers.ModelSerializer):
         fields = ['id', 'email', 'name']
         extra_kwargs = {
             'id': {'read_only': True},
-        } 
+        }
+
+
+# Serializer for the active theme with hero section data
+class ActiveThemeSerializer(serializers.ModelSerializer):
+    # Use the related Theme's id and name
+    id = serializers.IntegerField(source='theme.id')
+    theme_name = serializers.CharField(source='theme.name')
+
+    class Meta:
+        model = ExtendedTheme
+        fields = ['id', 'theme_name', 'hero_image', 'hero_image_alt', 'hero_box_color', 'show_navbar'] 

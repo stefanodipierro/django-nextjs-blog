@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import PostCard, { Post } from './PostCard';
 import PostSkeletonGrid from './PostSkeletonGrid';
 import { getPosts } from '../lib/api';
-import useIntersectionObserver from './useIntersectionObserver';
 
 interface PostGridProps {
   initialPosts: Post[];
@@ -69,19 +68,26 @@ const PostGrid: React.FC<PostGridProps> = ({
     }
   }, [hasMore, page, pageSize, category, search]);
 
-  // Use our custom hook to handle intersection observation
-  const { observe } = useIntersectionObserver({
-    threshold: observerThreshold,
-    enabled: hasMore && !isLoading,
-    onIntersect: loadMorePosts
-  });
-  
-  // Connect the loading element with the observer
+  // Inline IntersectionObserver for infinite scroll
   useEffect(() => {
-    if (loadingRef.current) {
-      observe(loadingRef.current);
+    if (!hasMore || isLoading) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          loadMorePosts();
+        }
+      },
+      { threshold: observerThreshold }
+    );
+    const node = loadingRef.current;
+    if (node) {
+      observer.observe(node);
     }
-  }, [observe, hasMore, isLoading]); 
+    return () => {
+      if (node) observer.unobserve(node);
+      observer.disconnect();
+    };
+  }, [hasMore, isLoading, loadMorePosts, observerThreshold]);
   
   if (error) {
     return (

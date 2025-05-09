@@ -1,14 +1,18 @@
 from rest_framework import viewsets, generics, filters
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
 
 from posts.models import Post
 from categories.models import Category
 from newsletter.models import Subscriber
 from .serializers import (
     PostListSerializer, PostDetailSerializer,
-    CategorySerializer, SubscriberSerializer
+    CategorySerializer, SubscriberSerializer,
+    ActiveThemeSerializer
 )
+from themes.models import ExtendedTheme
 
 
 class PostViewSet(viewsets.ReadOnlyModelViewSet):
@@ -67,4 +71,17 @@ class SubscriberCreateAPIView(generics.CreateAPIView):
     """
     queryset = Subscriber.objects.all()
     serializer_class = SubscriberSerializer
-    permission_classes = [AllowAny] 
+    permission_classes = [AllowAny]
+
+
+# API endpoint to fetch the active theme and hero section data
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def active_theme(request):
+    """Returns the active theme with hero image, box color, and navbar flag."""
+    ext = ExtendedTheme.objects.select_related('theme').first()
+    if not ext:
+        # Return null if no extended theme is configured
+        return Response(None)
+    serializer = ActiveThemeSerializer(ext)
+    return Response(serializer.data) 
