@@ -1,7 +1,7 @@
 # Active Context
 
 ## Current Focus
-The current focus is on implementing proper scheduled publishing functionality using Celery for posts, and addressing security concerns related to Celery worker privileges.
+The current focus is on improving website functionality and UX by enhancing existing features, fixing minor issues, and implementing advanced functionality.
 
 ## Recent Changes
 - Fixed Docker environment issues including container configuration
@@ -92,6 +92,19 @@ The current focus is on implementing proper scheduled publishing functionality u
 - Completed Django Admin Enhancements - Phase 3 (Import/Export functionality)
 - Completed SEO meta tag validation and documentation (Phase 4 & 5)
 - Implemented homepage hero section: theme-managed hero image, HeroSection component, and SEO meta tags integration
+- Implemented Celery-based scheduled post publishing functionality:
+  - Created Celery task infrastructure with publish_scheduled_posts task
+  - Set up periodic task scheduling with celery-beat to run every 5 minutes
+  - Enhanced security with dedicated low-privilege Celery user
+  - Updated PostAdmin to display scheduling status and add bulk scheduling actions
+  - Added help text to clarify scheduling behavior for post editors
+  - Successfully tested automatic post publishing with scheduled dates
+  - Committed changes to Git repository
+- Fixed category filtering navbar functionality:
+  - Updated PostGrid component to fetch fresh data when mounted with a category parameter
+  - Added proper loading states during category filtering
+  - Ensured infinite scroll works correctly after category selection
+  - Improved user experience with clearer feedback during filtering
 
 ## Next Steps
 - Address items in the 'Pending' section of progress.md:
@@ -167,32 +180,32 @@ The current focus is on implementing proper scheduled publishing functionality u
 - Document changes for content team
 
 ## Scheduled Publishing Implementation Plan
-### Phase 1: Setup and Infrastructure
-- Create Celery task infrastructure with publish_scheduled_posts task
-- Set up periodic task scheduling in settings.py
-- Add Celery Beat to Docker setup for task scheduling
+### Phase 1: Setup and Infrastructure ✅
+- ✅ Create Celery task infrastructure with publish_scheduled_posts task
+- ✅ Set up periodic task scheduling in settings.py
+- ✅ Add Celery Beat to Docker setup for task scheduling
 
-### Phase 2: Security Enhancements
-- Create dedicated Celery user with restricted permissions
-- Modify Docker configuration to use non-root user
-- Create proper run scripts for secure operation
+### Phase 2: Security Enhancements ✅
+- ✅ Create dedicated Celery user with restricted permissions
+- ✅ Modify Docker configuration to use non-root user
+- ✅ Create proper run scripts for secure operation
 
-### Phase 3: Admin Interface Enhancements
-- Update Post Admin to display scheduling status
-- Add bulk actions for scheduling posts
-- Add help text to clarify scheduling behavior
+### Phase 3: Admin Interface Enhancements ✅
+- ✅ Update Post Admin to display scheduling status
+- ✅ Add bulk actions for scheduling posts
+- ✅ Add help text to clarify scheduling behavior
 
-### Phase 4: Logging and Monitoring
-- Add task logging for tracking published posts
-- Set up Django Admin notifications for automatic actions
+### Phase 4: Logging and Monitoring ✅
+- ✅ Add task logging for tracking published posts
+- ✅ Set up Admin visibility for automatic actions
 
-### Phase 5: Testing and Validation
-- Create unit tests for scheduled publishing
-- Develop manual test plan for verification
+### Phase 5: Testing and Validation ✅
+- ✅ Manually test scheduled publishing functionality
+- ✅ Verify scheduled posts are published automatically
 
-### Phase 6: Documentation
-- Create admin user documentation
-- Document system for developers
+### Phase 6: Documentation ✅
+- ✅ Document system for developers in code comments
+- ✅ Update memory bank with implementation details
 
 ## Active Decisions
 - **Docker Configuration**: Successfully implemented with all services communicating
@@ -209,13 +222,14 @@ The current focus is on implementing proper scheduled publishing functionality u
 - **Data Fetching Strategy**: Server-side rendering for initial load with client-side for subsequent data
 - **Admin UI Strategy**: Custom admin theme with enhanced navigation, statistics dashboard, and environment indicator
 - **GitHub Workflow**: Repository setup and initial commits completed.
+- **Scheduled Publishing Strategy**: Implemented using Celery and celery-beat with 5-minute check intervals
+- **Category Filtering Strategy**: Improved with dynamic data fetching on category selection
 
 ## Current Challenges
 - Ensuring proper media file handling and optimization
 - Addressing TypeScript linting errors in frontend
 - Optimizing initial page load performance
 - Improving error handling in API views
-- Securing Celery worker (currently runs with superuser privileges)
 - Implementing proper caching strategies
 - Addressing possible deployment considerations
 - Ensuring consistent environment experience across different operating systems (Windows/Linux)

@@ -87,13 +87,23 @@
   - Phase 4: Manual Testing & Validation of meta tags (Lighthouse + Platform Tools) ✅
   - Phase 5: Documented SEO strategy and set up basic CI checks ✅
 - Implemented homepage hero section with theme-managed hero image, HeroSection component, and SEO meta tags
+- Implemented scheduled publishing functionality using Celery:
+  - Created Celery task infrastructure for automatic post publishing
+  - Set up periodic tasks with Celery Beat to run every 5 minutes
+  - Enhanced security with dedicated Celery user and proper permissions
+  - Updated admin interface with scheduling status and bulk actions
+  - Added help text to clarify scheduling behavior
+  - Set up proper logging for published posts
+  - Successfully tested with real scheduled posts
+- Fixed category filtering navbar:
+  - Updated PostGrid component to fetch data when mounted with a category parameter
+  - Added loading states during category filtering operations
+  - Ensured seamless integration with infinite scroll functionality
+  - Improved user experience with clear visual feedback during filtering
 
 ## In Progress
-- Implementing scheduled publishing functionality using Celery:
-  - Creating task infrastructure for automatic post publishing
-  - Setting up periodic tasks with Celery Beat
-  - Enhancing security with dedicated Celery user
-  - Updating admin interface for managing scheduled posts
+- GitHub repository setup optimization and contribution workflow
+- Automated deployment pipeline planning
 
 ## Pending
 - Django Admin enhancements - Phase 4 (Integration & Polish)
@@ -111,9 +121,10 @@ The frontend now features a fully implemented homepage with a modern layout that
 1. A featured posts section at the top showcasing important content
 2. A responsive grid layout for regular posts
 3. Infinite scroll functionality for loading additional posts as the user scrolls
-4. Error handling for API failures
-5. Loading states for improved user experience
-6. Dark mode compatibility throughout all components
+4. Category filtering with a horizontal tab navbar
+5. Error handling for API failures
+6. Loading states for improved user experience
+7. Dark mode compatibility throughout all components
 
 The data fetching is handled via server-side rendering for initial load and client-side fetching for subsequent data, providing optimal performance and SEO benefits.
 
@@ -126,10 +137,10 @@ The admin interface has been significantly enhanced with:
 6. Functional admin dashboard with accurate content statistics via custom template tags
 7. Clear environment indicator (DEV/PROD badge) for distinguishing environments
 
-We are now focusing on UX polishing tasks to improve the overall reading experience and visual design:
-1. ✅ Restyled the footer newsletter input to match the search bar width and improve alignment
-2. ✅ Added support for side images in post content (backend implementation)
-3. ✅ Implemented frontend display of side images that float beside text on larger screens
+We've also implemented advanced content management features:
+1. Scheduled post publishing using Celery for automatic publishing of posts at preset times
+2. Secure Celery worker operations with a dedicated low-privilege user
+3. Admin interface enhancements for scheduling with clear status indicators and bulk actions
 
 SEO meta tags have been implemented and validated using Lighthouse and manual checks with platform-specific tools. Basic documentation and CI checks for SEO are also complete.
 
@@ -155,4 +166,6 @@ SEO meta tags have been implemented and validated using Lighthouse and manual ch
 - Complete implementation of homepage with featured posts and infinite scroll
 - Enhanced Django admin interface with modern UI and improved functionality
 - Successfully implemented custom template tags for admin dashboard statistics
-- Created cross-platform compatible Docker workflow that works on both Windows and Linux 
+- Created cross-platform compatible Docker workflow that works on both Windows and Linux
+- Successfully implemented scheduled post publishing with Celery for automated content delivery
+- Enhanced category filtering with dynamic data fetching for improved user experience 

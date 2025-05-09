@@ -26,6 +26,8 @@ const PostGrid: React.FC<PostGridProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [reachedEnd, setReachedEnd] = useState(!initialHasMore);
+  // Track if we need to fetch fresh data based on category/search
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
   
   const loadingRef = useRef<HTMLDivElement>(null);
   const isLoadingRef = useRef(isLoading);
@@ -34,6 +36,39 @@ const PostGrid: React.FC<PostGridProps> = ({
   useEffect(() => {
     isLoadingRef.current = isLoading;
   }, [isLoading]);
+  
+  // Fetch initial posts when the component mounts or when category/search changes
+  useEffect(() => {
+    // Skip if we don't have category or search
+    if (!category && !search) {
+      setInitialLoadComplete(true);
+      return;
+    }
+    
+    const fetchInitialPosts = async () => {
+      try {
+        setIsLoading(true);
+        console.log(`Fetching initial posts for category: ${category}, search: ${search}`);
+        
+        const result = await getPosts(1, pageSize, category, search);
+        
+        // Update state with fresh data
+        setPosts(result.posts || []);
+        setHasMore(result.hasMore);
+        setReachedEnd(!result.hasMore);
+        setPage(1);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching initial posts:', err);
+        setError(err instanceof Error ? err : new Error('Failed to load posts'));
+      } finally {
+        setIsLoading(false);
+        setInitialLoadComplete(true);
+      }
+    };
+    
+    fetchInitialPosts();
+  }, [category, search, pageSize]);
   
   const loadMorePosts = useCallback(async () => {
     // Use ref to prevent race conditions between state updates and function calls
@@ -70,7 +105,7 @@ const PostGrid: React.FC<PostGridProps> = ({
 
   // Inline IntersectionObserver for infinite scroll
   useEffect(() => {
-    if (!hasMore || isLoading) return;
+    if (!hasMore || isLoading || !initialLoadComplete) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -87,7 +122,7 @@ const PostGrid: React.FC<PostGridProps> = ({
       if (node) observer.unobserve(node);
       observer.disconnect();
     };
-  }, [hasMore, isLoading, loadMorePosts, observerThreshold]);
+  }, [hasMore, isLoading, loadMorePosts, observerThreshold, initialLoadComplete]);
   
   if (error) {
     return (
@@ -100,6 +135,16 @@ const PostGrid: React.FC<PostGridProps> = ({
           Try Again
         </button>
       </div>
+    );
+  }
+  
+  // Show loading state for initial load
+  if (isLoading && !initialLoadComplete) {
+    return (
+      <section>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">Latest Posts</h2>
+        <PostSkeletonGrid count={6} />
+      </section>
     );
   }
   
