@@ -17,6 +17,7 @@ export interface ThemeData {
   hero_image: string | null;
   hero_image_alt: string;
   hero_box_color: string;
+  show_navbar: boolean;
 }
 
 /**
@@ -75,7 +76,7 @@ export async function getActiveTheme(): Promise<ThemeData | null> {
 export async function getPosts(
   page = 1,
   limit = 9,
-  category?: string,
+  category?: string | null,
   search?: string
 ): Promise<{
   posts: Post[],
@@ -149,5 +150,32 @@ export async function subscribe(email: string): Promise<{ id: number; email: str
   } catch (error) {
     console.error('Error in subscribe():', error);
     throw error;
+  }
+}
+
+/**
+ * Category data interface
+ */
+export interface CategoryData {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string;
+}
+
+/**
+ * Fetches list of categories from the API
+ */
+export async function getCategories(): Promise<CategoryData[]> {
+  try {
+    const response = await fetch(`${API_URL}/categories/`);
+    if (!response.ok) {
+      throw new Error(`Error fetching categories: ${response.status}`);
+    }
+    const data = await response.json();
+    return Array.isArray(data) ? data : data.results || [];
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    return [];
   }
 } 

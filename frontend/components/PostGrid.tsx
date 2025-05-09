@@ -8,7 +8,7 @@ interface PostGridProps {
   initialHasMore: boolean;
   observerThreshold?: number;
   pageSize?: number;
-  category?: string;
+  category?: string | null;
   search?: string;
 }
 

@@ -3,6 +3,7 @@ import Head from 'next/head';
 import FeaturedPosts from '../components/FeaturedPosts';
 import PostGrid from '../components/PostGrid';
 import HeroSection from '../components/HeroSection';
+import CategoryNavBar from '../components/CategoryNavBar';
 import { getFeaturedPosts, getPosts, getActiveTheme, ThemeData } from '../lib/api';
 import { Post } from '../components/PostCard';
 
@@ -56,6 +57,10 @@ const Home: React.FC<HomeProps> = ({
   const [featuredError, setFeaturedError] = useState<Error | null>(null);
   const [theme, setTheme] = useState<ThemeData | null>(initialTheme);
   const [isLoadingTheme, setIsLoadingTheme] = useState(false);
+  // Add state for selected category
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  // Add postGridKey to force remount of PostGrid when category changes
+  const [postGridKey, setPostGridKey] = useState(0);
   
   // Blog title and subtitle - can be moved to configuration or CMS later
   const blogTitle = "Blog Template";
@@ -98,6 +103,13 @@ const Home: React.FC<HomeProps> = ({
     fetchFeaturedPosts();
     fetchThemeData();
   }, [initialFeaturedPosts.length, initialTheme]);
+  
+  // Handle category selection
+  const handleCategorySelect = (categorySlug: string | null) => {
+    setSelectedCategory(categorySlug);
+    // Increment key to force PostGrid remount with new category
+    setPostGridKey(prev => prev + 1);
+  };
   
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
@@ -144,6 +156,14 @@ const Home: React.FC<HomeProps> = ({
           </div>
         </form>
         
+        {/* Category Navbar - conditionally render based on theme setting */}
+        {theme?.show_navbar && (
+          <CategoryNavBar 
+            selectedCategory={selectedCategory}
+            onCategorySelect={handleCategorySelect}
+          />
+        )}
+        
         <FeaturedPosts 
           posts={featuredPosts} 
           isLoading={isLoadingFeatured} 
@@ -151,10 +171,12 @@ const Home: React.FC<HomeProps> = ({
         />
         
         <PostGrid 
+          key={postGridKey}
           initialPosts={initialPosts} 
           initialHasMore={initialHasMore}
           observerThreshold={0.2}
-          pageSize={9} 
+          pageSize={9}
+          category={selectedCategory}
         />
       </main>
     </div>
