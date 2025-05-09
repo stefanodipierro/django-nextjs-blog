@@ -1,7 +1,7 @@
 # Active Context
 
 ## Current Focus
-The current focus is on addressing pending tasks and any known issues.
+The current focus is on implementing proper scheduled publishing functionality using Celery for posts, and addressing security concerns related to Celery worker privileges.
 
 ## Recent Changes
 - Fixed Docker environment issues including container configuration
@@ -165,6 +165,34 @@ The current focus is on addressing pending tasks and any known issues.
 - Create custom admin templates if needed
 - Add dashboard widgets for content statistics
 - Document changes for content team
+
+## Scheduled Publishing Implementation Plan
+### Phase 1: Setup and Infrastructure
+- Create Celery task infrastructure with publish_scheduled_posts task
+- Set up periodic task scheduling in settings.py
+- Add Celery Beat to Docker setup for task scheduling
+
+### Phase 2: Security Enhancements
+- Create dedicated Celery user with restricted permissions
+- Modify Docker configuration to use non-root user
+- Create proper run scripts for secure operation
+
+### Phase 3: Admin Interface Enhancements
+- Update Post Admin to display scheduling status
+- Add bulk actions for scheduling posts
+- Add help text to clarify scheduling behavior
+
+### Phase 4: Logging and Monitoring
+- Add task logging for tracking published posts
+- Set up Django Admin notifications for automatic actions
+
+### Phase 5: Testing and Validation
+- Create unit tests for scheduled publishing
+- Develop manual test plan for verification
+
+### Phase 6: Documentation
+- Create admin user documentation
+- Document system for developers
 
 ## Active Decisions
 - **Docker Configuration**: Successfully implemented with all services communicating

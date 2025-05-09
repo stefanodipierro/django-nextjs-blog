@@ -166,7 +166,16 @@ CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND')
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = TIME_ZONE 
+CELERY_TIMEZONE = TIME_ZONE
+
+# Celery Beat schedule settings
+from celery.schedules import crontab
+CELERY_BEAT_SCHEDULE = {
+    'publish-scheduled-posts': {
+        'task': 'posts.tasks.publish_scheduled_posts',
+        'schedule': crontab(minute='*/5'),  # Run every 5 minutes
+    },
+}
 
 # Summernote configuration
 SUMMERNOTE_CONFIG = {

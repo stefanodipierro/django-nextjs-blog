@@ -89,6 +89,11 @@
 - Implemented homepage hero section with theme-managed hero image, HeroSection component, and SEO meta tags
 
 ## In Progress
+- Implementing scheduled publishing functionality using Celery:
+  - Creating task infrastructure for automatic post publishing
+  - Setting up periodic tasks with Celery Beat
+  - Enhancing security with dedicated Celery user
+  - Updating admin interface for managing scheduled posts
 
 ## Pending
 - Django Admin enhancements - Phase 4 (Integration & Polish)

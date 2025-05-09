@@ -44,7 +44,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    command: celery -A blog worker -l INFO
+    command: /app/scripts/run-celery.sh worker
     volumes:
       - ./backend:/app
     env_file:
@@ -52,6 +52,22 @@ services:
     depends_on:
       - django
       - redis
+    restart: on-failure
+
+  # Celery beat for scheduled tasks
+  celery-beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: /app/scripts/run-celery.sh beat
+    volumes:
+      - ./backend:/app
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - celery
+      - redis
+      - django
     restart: on-failure
 
   # Next.js frontend

@@ -22,7 +22,10 @@ class Post(models.Model):
                                     help_text="Optional image to float right of content on large screens.")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    published_at = models.DateTimeField(default=timezone.now)
+    published_at = models.DateTimeField(
+        default=timezone.now,
+        help_text="Posts with 'draft' status and future date will be automatically published at this time."
+    )
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
     is_featured = models.BooleanField(default=False)
     
