@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { getOptimizedImageUrl } from '../lib/utils';
 
 export interface Post {
   id: number;
@@ -33,6 +34,11 @@ interface PostCardProps {
 const FALLBACK_BLUR_PLACEHOLDER = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZGRkIi8+PC9zdmc+';
 
 const PostCard: React.FC<PostCardProps> = ({ post }) => {
+  useEffect(() => {
+    console.log(`[PostCard] Post ID: ${post.id}, Title: ${post.title}`);
+    console.log(`[PostCard] Original featured_image URL: ${post.featured_image}`);
+  }, [post.id, post.title, post.featured_image]);
+
   const formattedDate = new Date(post.published_at).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -41,6 +47,11 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
 
   // Use the dynamic blur data URL if available, otherwise fall back to the static one
   const blurDataURL = post.blur_data_url || FALLBACK_BLUR_PLACEHOLDER;
+  
+  // Get optimized image URL
+  console.log(`[PostCard] Getting optimized URL for post ${post.id}`);
+  const optimizedImageUrl = getOptimizedImageUrl(post.featured_image);
+  console.log(`[PostCard] Final optimized URL for image: ${optimizedImageUrl}`);
 
   return (
     <div className={`
@@ -48,10 +59,10 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
       hover:shadow-lg flex flex-col h-full
       ${post.is_featured ? 'border-l-4 border-indigo-500' : ''}
     `}>
-      {post.featured_image && (
+      {optimizedImageUrl && (
         <div className="relative h-40 sm:h-48 md:h-52 w-full">
           <Image
-            src={post.featured_image}
+            src={optimizedImageUrl}
             alt={post.title}
             fill
             placeholder="blur"

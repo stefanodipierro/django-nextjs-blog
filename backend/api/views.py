@@ -12,7 +12,7 @@ from .serializers import (
     CategorySerializer, SubscriberSerializer,
     ActiveThemeSerializer
 )
-from themes.models import ExtendedTheme
+from themes.models import ExtendedTheme, Theme
 
 
 class PostViewSet(viewsets.ReadOnlyModelViewSet):
@@ -79,9 +79,17 @@ class SubscriberCreateAPIView(generics.CreateAPIView):
 @permission_classes([AllowAny])
 def active_theme(request):
     """Returns the active theme with hero image, box color, and navbar flag."""
-    ext = ExtendedTheme.objects.select_related('theme').first()
+    # Get the active admin theme first
+    active_admin_theme = Theme.objects.filter(active=True).first()
+    if not active_admin_theme:
+        # Return null if no active theme is found
+        return Response(None)
+    
+    # Get the extended theme associated with the active admin theme
+    ext = ExtendedTheme.objects.filter(theme=active_admin_theme).first()
     if not ext:
         # Return null if no extended theme is configured
         return Response(None)
+    
     serializer = ActiveThemeSerializer(ext)
     return Response(serializer.data) 

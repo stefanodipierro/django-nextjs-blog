@@ -44,7 +44,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    command: /app/scripts/run-celery.sh worker
+    command: celery -A blog worker -l INFO
     volumes:
       - ./backend:/app
     env_file:
@@ -59,7 +59,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    command: /app/scripts/run-celery.sh beat
+    command: celery -A blog beat -l INFO
     volumes:
       - ./backend:/app
     env_file:
@@ -82,6 +82,9 @@ services:
       - "3000:3000"
     env_file:
       - ./.env.dev
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+      - NEXT_PUBLIC_INTERNAL_API_URL=http://django:8000/api/v1
     depends_on:
       - django
     command: yarn dev

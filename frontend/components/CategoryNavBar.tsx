@@ -19,12 +19,15 @@ const CategoryNavBar: React.FC<CategoryNavBarProps> = ({
   // Fetch categories on component mount
   useEffect(() => {
     const fetchCategories = async () => {
+      console.log("🔍 [NavBar] fetching categories…");
       try {
         setIsLoading(true);
         const data = await getCategories();
+        console.log("✅ [NavBar] fetched categories:", data);
         setCategories(data);
         setError(null);
       } catch (err) {
+        console.error("❌ [NavBar] failed to load categories:", err);
         setError(err instanceof Error ? err : new Error('Failed to load categories'));
       } finally {
         setIsLoading(false);
@@ -64,9 +67,11 @@ const CategoryNavBar: React.FC<CategoryNavBarProps> = ({
     );
   }
   
-  // Empty state
-  if (categories.length === 0) {
-    return null;
+  // Empty state (debug fallback)
+  if (!isLoading && !error && categories.length === 0) {
+    return (
+      <div className={`text-red-500 p-4 ${className}`}>⚠️ No categories loaded (debug)</div>
+    );
   }
   
   return (

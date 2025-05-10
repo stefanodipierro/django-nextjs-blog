@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import { getPost } from '../../lib/api';
@@ -7,8 +7,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-// @ts-expect-error - type definitions may not exist for remark-gfm but runtime import is fine
 import SocialShare from '../../components/SocialShare';
+import { getOptimizedImageUrl } from '../../lib/utils';
 
 interface PostPageProps {
   post: Post | null;
@@ -25,16 +25,79 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   if (!post) {
     return { notFound: true };
   }
+  console.log(`[SSR] Post ${slug} data:`, { 
+    id: post.id, 
+    featured_image: post.featured_image,
+    side_image_1: post.side_image_1,
+    side_image_2: post.side_image_2
+  });
   return { props: { post } };
 };
 
+// Per i meta tag, usare sempre localhost:8000 anche se lato server
+function getMetaImageUrl(url: string | null): string {
+  if (!url) return '';
+  
+  // Se è già un URL assoluto, ritornalo così com'è
+  if (url.startsWith('http')) {
+    // Se contiene django:8000, sostituirlo con localhost:8000 per i meta tag
+    if (url.includes('django:8000')) {
+      return url.replace('http://django:8000', 'http://localhost:8000');
+    }
+    return url;
+  }
+  
+  // Per URL relativi, aggiungi sempre localhost:8000 (mai django:8000)
+  if (url.startsWith('/')) {
+    return `http://localhost:8000${url}`;
+  } else {
+    return `http://localhost:8000/${url}`;
+  }
+}
+
 const PostPage: React.FC<PostPageProps> = ({ post }) => {
+  useEffect(() => {
+    if (post) {
+      console.log(`[PostPage] Client-side, Post ${post.id} - ${post.title}`);
+      console.log(`[PostPage] Original image URLs:`, {
+        featured: post.featured_image,
+        side1: post.side_image_1,
+        side2: post.side_image_2
+      });
+    }
+  }, [post]);
+
   if (!post) return null;
 
   const formattedDate = new Date(post.published_at).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+  });
+
+  console.log(`[PostPage] Server-side or Hydration, Post ${post.id} - ${post.title}`);
+  console.log('[PostPage] Getting optimized image URLs');
+
+  // Get optimized image URLs
+  const optimizedFeaturedImage = getOptimizedImageUrl(post.featured_image);
+  const optimizedSideImage1 = getOptimizedImageUrl(post.side_image_1 || null);
+  const optimizedSideImage2 = getOptimizedImageUrl(post.side_image_2 || null);
+
+  console.log('[PostPage] Optimized image URLs:', {
+    featured: optimizedFeaturedImage,
+    side1: optimizedSideImage1,
+    side2: optimizedSideImage2
+  });
+
+  // Per i meta tag, usa sempre URL con localhost:8000 (non django:8000)
+  const clientFeaturedImage = getMetaImageUrl(post.featured_image);
+  const clientSideImage1 = getMetaImageUrl(post.side_image_1 || null);
+  const clientSideImage2 = getMetaImageUrl(post.side_image_2 || null);
+
+  console.log('[PostPage] Meta tag image URLs:', {
+    featured: clientFeaturedImage,
+    side1: clientSideImage1,
+    side2: clientSideImage2
   });
 
   return (
@@ -49,25 +112,25 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
         <meta name="twitter:title" content={post.title} />
         <meta name="twitter:description" content={post.excerpt || post.title} />
         {/* Dynamic OG images */}
-        {post.featured_image && (
+        {clientFeaturedImage && (
           <>
-            <meta property="og:image" content={post.featured_image} />
+            <meta property="og:image" content={clientFeaturedImage} />
             <meta property="og:image:alt" content={`${post.title} – Featured Image`} />
             <meta property="og:image:width" content="1200" />
             <meta property="og:image:height" content="630" />
           </>
         )}
-        {post.side_image_1 && (
+        {clientSideImage1 && (
           <>
-            <meta property="og:image" content={post.side_image_1} />
+            <meta property="og:image" content={clientSideImage1} />
             <meta property="og:image:alt" content={`${post.title} – Side Image 1`} />
             <meta property="og:image:width" content="1200" />
             <meta property="og:image:height" content="630" />
           </>
         )}
-        {post.side_image_2 && (
+        {clientSideImage2 && (
           <>
-            <meta property="og:image" content={post.side_image_2} />
+            <meta property="og:image" content={clientSideImage2} />
             <meta property="og:image:alt" content={`${post.title} – Side Image 2`} />
             <meta property="og:image:width" content="1200" />
             <meta property="og:image:height" content="630" />
@@ -77,7 +140,7 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
         <meta
           name="twitter:image"
           content={
-            post.featured_image || post.side_image_1 || post.side_image_2 || ''
+            clientFeaturedImage || clientSideImage1 || clientSideImage2 || ''
           }
         />
       </Head>
@@ -97,10 +160,10 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
             ))}
           </div>
 
-          {post.featured_image && (
+          {optimizedFeaturedImage && (
             <div className="relative w-full h-64 md:h-96 mb-8">
               <Image
-                src={post.featured_image}
+                src={optimizedFeaturedImage}
                 alt={post.title}
                 fill
                 priority
@@ -130,10 +193,10 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
                     {part1}
                   </ReactMarkdown>
                   {/* First side image */}
-                  {post.side_image_1 && (
+                  {optimizedSideImage1 && (
                     <div className="relative w-full sm:w-1/2 lg:w-1/3 float-left mb-6 lg:mr-6 h-48">
                       <Image
-                        src={post.side_image_1}
+                        src={optimizedSideImage1}
                         alt={`${post.title} side image`}
                         fill
                         placeholder="blur"
@@ -148,10 +211,10 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
                     {part2}
                   </ReactMarkdown>
                   {/* Second side image */}
-                  {post.side_image_2 && (
+                  {optimizedSideImage2 && (
                     <div className="relative w-full sm:w-1/2 lg:w-1/3 float-right mb-6 lg:ml-6 h-48">
                       <Image
-                        src={post.side_image_2}
+                        src={optimizedSideImage2}
                         alt={`${post.title} side image`}
                         fill
                         placeholder="blur"

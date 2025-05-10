@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { ThemeData } from '../lib/api';
+import { getOptimizedImageUrl } from '../lib/utils';
 
 interface HeroSectionProps {
   theme: ThemeData | null;
@@ -30,11 +31,17 @@ const HeroSection: React.FC<HeroSectionProps> = ({
     );
   }
 
+  console.log(`[HeroSection] Original hero image URL: ${theme.hero_image}`);
+  
+  // Get optimized image URL for the hero image
+  const optimizedHeroImageUrl = getOptimizedImageUrl(theme.hero_image);
+  console.log(`[HeroSection] Optimized hero image URL: ${optimizedHeroImageUrl}`);
+
   return (
     <div className="relative h-80 sm:h-96 md:h-[500px] w-full mb-12 overflow-hidden">
       {/* Hero Image */}
       <Image
-        src={theme.hero_image}
+        src={optimizedHeroImageUrl}
         alt={theme.hero_image_alt || title}
         fill
         sizes="100vw"
