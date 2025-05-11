@@ -25,6 +25,10 @@ def is_external_url(url):
     if match:
         return True
     
+    # Check for malformed external urls
+    if 'picsum.photos' in url or 'unsplash.com' in url or 'pexels.com' in url:
+        return True
+    
     return False
 
 
@@ -37,6 +41,23 @@ def get_direct_url(url):
     
     # If already a direct external URL
     if is_external_url(url) and not '/media/' in url:
+        # Fix malformed protocol separator
+        if 'https:/picsum' in url:
+            url = url.replace('https:/picsum', 'https://picsum')
+        if 'http:/picsum' in url:
+            url = url.replace('http:/picsum', 'http://picsum')
+        
+        # Fix other known external image services
+        if 'https:/unsplash' in url:
+            url = url.replace('https:/unsplash', 'https://unsplash')
+        if 'http:/unsplash' in url:
+            url = url.replace('http:/unsplash', 'http://unsplash')
+            
+        if 'https:/pexels' in url:
+            url = url.replace('https:/pexels', 'https://pexels')
+        if 'http:/pexels' in url:
+            url = url.replace('http:/pexels', 'http://pexels')
+            
         return url
     
     # Try to extract external URL from media path
@@ -61,6 +82,17 @@ def get_direct_url(url):
             decoded_url = decoded_url.replace('https:/picsum', 'https://picsum')
         if 'http:/picsum' in decoded_url:
             decoded_url = decoded_url.replace('http:/picsum', 'http://picsum')
+            
+        # Fix other known external image services
+        if 'https:/unsplash' in decoded_url:
+            decoded_url = decoded_url.replace('https:/unsplash', 'https://unsplash')
+        if 'http:/unsplash' in decoded_url:
+            decoded_url = decoded_url.replace('http:/unsplash', 'http://unsplash')
+            
+        if 'https:/pexels' in decoded_url:
+            decoded_url = decoded_url.replace('https:/pexels', 'https://pexels')
+        if 'http:/pexels' in decoded_url:
+            decoded_url = decoded_url.replace('http:/pexels', 'http://pexels')
             
         return decoded_url
     
