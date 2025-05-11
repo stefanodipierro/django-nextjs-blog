@@ -92,7 +92,7 @@ const FeaturedPosts: React.FC<FeaturedPostsProps> = ({ posts, isLoading, error }
                     placeholder="blur"
                     blurDataURL={post.blur_data_url || FALLBACK_BLUR_PLACEHOLDER}
                     className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 30vw"
                   />
                 </div>
               )}

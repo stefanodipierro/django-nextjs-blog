@@ -44,7 +44,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         src={optimizedHeroImageUrl}
         alt={theme.hero_image_alt || title}
         fill
-        sizes="100vw"
+        sizes="(max-width: 768px) 100vw, min(1280px, 90vw)"
         priority
         className="object-cover"
       />
