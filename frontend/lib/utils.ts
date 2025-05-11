@@ -41,7 +41,17 @@ export function getOptimizedImageUrl(url: string | null): string {
     const decodedUrl = decodeURIComponent(encodedPart.replace(/%3A/g, ':'));
     if (decodedUrl.startsWith('http')) {
       console.log(`[getOptimizedImageUrl] Detected encapsulated external URL: ${decodedUrl}`);
-      finalUrl = decodedUrl;
+      
+      // Fix the common issue with https:/picsum.photos -> https://picsum.photos
+      let fixedUrl = decodedUrl;
+      if (decodedUrl.includes('https:/picsum')) {
+        fixedUrl = decodedUrl.replace('https:/picsum', 'https://picsum');
+      }
+      if (decodedUrl.includes('http:/picsum')) {
+        fixedUrl = decodedUrl.replace('http:/picsum', 'http://picsum');
+      }
+      
+      finalUrl = fixedUrl;
     }
   }
   // If still looks like a Django-wrapped external URL after failed decoding
@@ -51,12 +61,30 @@ export function getOptimizedImageUrl(url: string | null): string {
     const matches = url.match(/\/media\/(https?:\/\/.+)/i);
     if (matches && matches[1]) {
       console.log(`[getOptimizedImageUrl] Extracted encapsulated URL: ${matches[1]}`);
-      finalUrl = matches[1];
+      
+      // Fix URL if needed
+      let extractedUrl = matches[1];
+      if (extractedUrl.includes('https:/picsum')) {
+        extractedUrl = extractedUrl.replace('https:/picsum', 'https://picsum');
+      }
+      if (extractedUrl.includes('http:/picsum')) {
+        extractedUrl = extractedUrl.replace('http:/picsum', 'http://picsum');
+      }
+      
+      finalUrl = extractedUrl;
     }
   }
   // If it's already an absolute URL
   else if (url.startsWith('http')) {
     console.log('[getOptimizedImageUrl] URL is already absolute');
+    
+    // Fix the URL format if needed
+    if (url.includes('https:/picsum')) {
+      finalUrl = url.replace('https:/picsum', 'https://picsum');
+    }
+    if (url.includes('http:/picsum')) {
+      finalUrl = url.replace('http:/picsum', 'http://picsum');
+    }
     
     // If we're on the server and URL contains localhost:8000, replace with django:8000
     if (isServer && (
@@ -64,7 +92,7 @@ export function getOptimizedImageUrl(url: string | null): string {
       url.includes('127.0.0.1:8000') || 
       url.includes('[::1]:8000')
     )) {
-      finalUrl = url.replace(/https?:\/\/(localhost|127\.0\.0\.1|\[::1\]):8000/g, 'http://django:8000');
+      finalUrl = finalUrl.replace(/https?:\/\/(localhost|127\.0\.0\.1|\[::1\]):8000/g, 'http://django:8000');
       console.log(`[getOptimizedImageUrl] Replaced localhost with django: ${finalUrl}`);
     }
   } else {
@@ -100,11 +128,21 @@ export function getPublicImageUrl(url: string | null): string {
   
   // If it's already an absolute URL from a public source (like Picsum)
   if (url.startsWith('http') && !url.includes('django:8000') && !url.includes('localhost:8000')) {
-    // Check if it's an external URL that needs decoding
-    if (url.includes('%3A') || url.includes('%2F')) {
-      return decodeURIComponent(url);
+    // Fix URL format if needed
+    let fixedUrl = url;
+    if (url.includes('https:/picsum')) {
+      fixedUrl = url.replace('https:/picsum', 'https://picsum');
     }
-    return url;
+    if (url.includes('http:/picsum')) {
+      fixedUrl = url.replace('http:/picsum', 'http://picsum');
+    }
+    
+    // Check if it's an external URL that needs decoding
+    if (fixedUrl.includes('%3A') || fixedUrl.includes('%2F')) {
+      fixedUrl = decodeURIComponent(fixedUrl);
+    }
+    
+    return fixedUrl;
   }
   
   // Check for encoded or encapsulated external URLs
@@ -115,6 +153,13 @@ export function getPublicImageUrl(url: string | null): string {
     // Try to extract and decode the actual external URL
     const decodedUrl = decodeURIComponent(encodedPart.replace(/%3A/g, ':'));
     if (decodedUrl.startsWith('http')) {
+      // Fix the URL format
+      if (decodedUrl.includes('https:/picsum')) {
+        return decodedUrl.replace('https:/picsum', 'https://picsum');
+      }
+      if (decodedUrl.includes('http:/picsum')) {
+        return decodedUrl.replace('http:/picsum', 'http://picsum');
+      }
       return decodedUrl;
     }
   }
@@ -122,7 +167,15 @@ export function getPublicImageUrl(url: string | null): string {
   // Pattern 2: http://django:8000/media/http:/picsum.photos/...
   const directExternalUrlMatch = url.match(/https?:\/\/[^\/]+\/media\/(https?:\/\/.+)/i);
   if (directExternalUrlMatch && directExternalUrlMatch[1]) {
-    return directExternalUrlMatch[1];
+    let extractedUrl = directExternalUrlMatch[1];
+    // Fix the URL format
+    if (extractedUrl.includes('https:/picsum')) {
+      extractedUrl = extractedUrl.replace('https:/picsum', 'https://picsum');
+    }
+    if (extractedUrl.includes('http:/picsum')) {
+      extractedUrl = extractedUrl.replace('http:/picsum', 'http://picsum');
+    }
+    return extractedUrl;
   }
   
   // If it's an internal URL (starting with http://django:8000 or http://localhost:8000)

@@ -45,6 +45,7 @@ def get_direct_url(url):
     if match:
         # Extract and properly decode the external URL
         encoded_url = match.group(1)
+        # First replace %3A with : for protocol
         decoded_url = encoded_url.replace('%3A', ':').replace('%2F', '/')
         
         # Handle more complex encoding if needed
@@ -54,7 +55,13 @@ def get_direct_url(url):
                 decoded_url = unquote(decoded_url)
             except:
                 pass
-                
+        
+        # Fix the common issue with https:/picsum.photos -> https://picsum.photos
+        if 'https:/picsum' in decoded_url:
+            decoded_url = decoded_url.replace('https:/picsum', 'https://picsum')
+        if 'http:/picsum' in decoded_url:
+            decoded_url = decoded_url.replace('http:/picsum', 'http://picsum')
+            
         return decoded_url
     
     return url
