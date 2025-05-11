@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getOptimizedImageUrl } from '../lib/utils';
@@ -34,16 +34,23 @@ interface PostCardProps {
 const FALLBACK_BLUR_PLACEHOLDER = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZGRkIi8+PC9zdmc+';
 
 const PostCard: React.FC<PostCardProps> = ({ post }) => {
+  const [isMounted, setIsMounted] = useState(false);
+  const [formattedDate, setFormattedDate] = useState<string>('');
+
   useEffect(() => {
     console.log(`[PostCard] Post ID: ${post.id}, Title: ${post.title}`);
     console.log(`[PostCard] Original featured_image URL: ${post.featured_image}`);
-  }, [post.id, post.title, post.featured_image]);
-
-  const formattedDate = new Date(post.published_at).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+    
+    // Format the date on the client side only
+    const date = new Date(post.published_at);
+    const formatted = date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+    setFormattedDate(formatted);
+    setIsMounted(true);
+  }, [post.id, post.title, post.featured_image, post.published_at]);
 
   // Use the dynamic blur data URL if available, otherwise fall back to the static one
   const blurDataURL = post.blur_data_url || FALLBACK_BLUR_PLACEHOLDER;
@@ -96,7 +103,9 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
         </p>
 
         <div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400 mt-auto">
-          <span className="text-xs sm:text-xs truncate max-w-[60%]">{formattedDate}</span>
+          <span className="text-xs sm:text-xs truncate max-w-[60%]">
+            {isMounted ? formattedDate : ''}
+          </span>
           <span className="text-xs sm:text-xs">{post.reading_time} min read</span>
         </div>
       </div>
