@@ -174,8 +174,6 @@ const Home: React.FC<HomeProps> = ({
             rel="preload" 
             href={heroImageUrl} 
             as="image" 
-            // Use standard attributes only
-            fetchPriority="high" 
           />
         )}
         

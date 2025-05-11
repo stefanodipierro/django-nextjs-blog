@@ -128,7 +128,6 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
             rel="preload" 
             href={metaFeaturedImage} 
             as="image" 
-            fetchPriority="high" 
           />
         )}
         
@@ -218,7 +217,7 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
                 fill
                 priority
                 placeholder="blur"
-                fetchPriority="high"
+                quality={60}
                 blurDataURL={post.blur_data_url || FALLBACK_BLUR_PLACEHOLDER}
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, min(1200px, 100%)"

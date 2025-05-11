@@ -46,9 +46,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         fill
         sizes="(max-width: 768px) 100vw, min(1280px, 90vw)"
         priority
-        fetchPriority="high"
         className="object-cover"
         placeholder="blur"
+        quality={60}
         blurDataURL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZjNmNGY2Ii8+PC9zdmc+"
       />
       

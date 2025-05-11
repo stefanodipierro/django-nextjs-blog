@@ -26,6 +26,7 @@ class MyDocument extends Document {
               width: 100%;
               height: 500px;
               position: relative;
+              z-index: 10;
             }
             .img-placeholder {
               background-color: #e5e7eb;
@@ -33,6 +34,20 @@ class MyDocument extends Document {
             /* Ensure content is visible during page load */
             body {
               display: block;
+            }
+            /* Prevent image flash during load */
+            main > * {
+              opacity: 0;
+              animation: fadeIn 0.15s ease-in forwards;
+              animation-delay: 0.05s;
+            }
+            main > *:first-child {
+              opacity: 1;
+              animation: none;
+            }
+            @keyframes fadeIn {
+              from { opacity: 0; }
+              to { opacity: 1; }
             }
           `}} />
         </Head>
