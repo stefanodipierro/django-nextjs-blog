@@ -38,7 +38,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
   console.log(`[HeroSection] Optimized hero image URL: ${optimizedHeroImageUrl}`);
 
   return (
-    <div className="relative h-80 sm:h-96 md:h-[500px] w-full mb-12 overflow-hidden hero-placeholder">
+    <div className="relative h-80 sm:h-96 md:h-[500px] w-full mb-12 overflow-hidden hero-placeholder" style={{ contain: 'layout paint size' }}>
       {/* Hero Image */}
       <Image
         src={optimizedHeroImageUrl}

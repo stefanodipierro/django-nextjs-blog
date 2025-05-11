@@ -210,7 +210,7 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
           </div>
 
           {optimizedFeaturedImage && (
-            <div className="relative w-full h-64 md:h-96 mb-8">
+            <div className="relative w-full h-64 md:h-96 mb-8 image-container" style={{ contain: 'layout size style' }}>
               <Image
                 src={optimizedFeaturedImage}
                 alt={post.title}
@@ -244,7 +244,7 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
                   </ReactMarkdown>
                   {/* First side image */}
                   {optimizedSideImage1 && (
-                    <div className="relative w-full sm:w-1/2 lg:w-1/3 float-left mb-6 lg:mr-6 h-48">
+                    <div className="relative w-full sm:w-1/2 lg:w-1/3 float-left mb-6 lg:mr-6 h-48 image-container" style={{ contain: 'layout size' }}>
                       <Image
                         src={optimizedSideImage1}
                         alt={`${post.title} side image`}
@@ -262,7 +262,7 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
                   </ReactMarkdown>
                   {/* Second side image */}
                   {optimizedSideImage2 && (
-                    <div className="relative w-full sm:w-1/2 lg:w-1/3 float-right mb-6 lg:ml-6 h-48">
+                    <div className="relative w-full sm:w-1/2 lg:w-1/3 float-right mb-6 lg:ml-6 h-48 image-container" style={{ contain: 'layout size' }}>
                       <Image
                         src={optimizedSideImage2}
                         alt={`${post.title} side image 2`}

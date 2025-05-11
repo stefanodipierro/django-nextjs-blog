@@ -21,20 +21,51 @@ class MyDocument extends Document {
           {/* Critical CSS could be inlined here */}
           <style dangerouslySetInnerHTML={{ __html: `
             /* Critical CSS for immediate rendering */
+            html, body {
+              overflow-x: hidden;
+              height: 100%;
+              width: 100%;
+              margin: 0;
+              padding: 0;
+            }
+            
+            /* Prevent content jumps */
+            body {
+              display: block;
+              min-height: 100vh;
+              position: relative;
+            }
+            
+            /* Prevent layout shifts by reserving space for key elements */
             .hero-placeholder {
               background-color: #f3f4f6;
               width: 100%;
               height: 500px;
               position: relative;
               z-index: 10;
+              aspect-ratio: 3/1;
+              contain: layout size;
             }
+            
             .img-placeholder {
               background-color: #e5e7eb;
+              aspect-ratio: 16/9;
+              contain: layout size;
             }
-            /* Ensure content is visible during page load */
-            body {
-              display: block;
+            
+            /* Create stable image containers */
+            img, [class*="Image_"] {
+              height: auto;
+              max-width: 100%;
+              object-fit: contain;
             }
+            
+            /* Force images to maintain aspect ratio */
+            .image-container {
+              position: relative;
+              contain: layout style;
+            }
+            
             /* Prevent image flash during load */
             main > * {
               opacity: 0;
