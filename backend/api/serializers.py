@@ -42,12 +42,15 @@ def get_direct_url(url):
     # If already a direct external URL
     if is_external_url(url) and not '/media/' in url:
         # Fix malformed protocol separator
+        if url.startswith('http') and ':/' in url and not '://' in url:
+            url = re.sub(r'(https?):\/([^\/])', r'\1://\2', url)
+        
+        # Fix specific cases for known image services
         if 'https:/picsum' in url:
             url = url.replace('https:/picsum', 'https://picsum')
         if 'http:/picsum' in url:
             url = url.replace('http:/picsum', 'http://picsum')
-        
-        # Fix other known external image services
+            
         if 'https:/unsplash' in url:
             url = url.replace('https:/unsplash', 'https://unsplash')
         if 'http:/unsplash' in url:
@@ -77,13 +80,16 @@ def get_direct_url(url):
             except:
                 pass
         
-        # Fix the common issue with https:/picsum.photos -> https://picsum.photos
+        # Fix malformed protocol separator with regex (general case)
+        if decoded_url.startswith('http') and ':/' in decoded_url and not '://' in decoded_url:
+            decoded_url = re.sub(r'(https?):\/([^\/])', r'\1://\2', decoded_url)
+        
+        # Fix specific cases for known image services
         if 'https:/picsum' in decoded_url:
             decoded_url = decoded_url.replace('https:/picsum', 'https://picsum')
         if 'http:/picsum' in decoded_url:
             decoded_url = decoded_url.replace('http:/picsum', 'http://picsum')
             
-        # Fix other known external image services
         if 'https:/unsplash' in decoded_url:
             decoded_url = decoded_url.replace('https:/unsplash', 'https://unsplash')
         if 'http:/unsplash' in decoded_url:
