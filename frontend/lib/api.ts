@@ -68,11 +68,18 @@ export interface ThemeData {
 
 /**
  * Fetches featured posts from the API
+ * @param category Optional category slug to filter featured posts
  */
-export async function getFeaturedPosts(): Promise<Post[]> {
+export async function getFeaturedPosts(category?: string | null): Promise<Post[]> {
   try {
-    console.log(`[API:getFeaturedPosts] Fetching from ${API_URL}/featured-posts/`);
-    const response = await fetch(`${API_URL}/featured-posts/`);
+    // Build the URL with optional category filter
+    let url = `${API_URL}/featured-posts/`;
+    if (category) {
+      url += `?category=${encodeURIComponent(category)}`;
+    }
+    
+    console.log(`[API:getFeaturedPosts] Fetching from ${url}`);
+    const response = await fetch(url);
     
     if (!response.ok) {
       throw new Error(`Error fetching featured posts: ${response.status}`);
@@ -82,7 +89,7 @@ export async function getFeaturedPosts(): Promise<Post[]> {
     // Some endpoints might wrap results in { results: [] }
     const results = Array.isArray(data) ? data : data.results || [];
     
-    console.log(`[API:getFeaturedPosts] Got ${results.length} posts`);
+    console.log(`[API:getFeaturedPosts] Got ${results.length} posts${category ? ` for category ${category}` : ''}`);
     
     // Transform image URLs in all posts
     const transformedResults = results.map((post: Post) => transformPostImageUrls(post));

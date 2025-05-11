@@ -2,6 +2,9 @@
  * Utility functions for the frontend
  */
 
+// Site URL from environment variable with fallback
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
 /**
  * Ensures image URLs are properly formatted for Next.js Image optimization
  * 
@@ -81,4 +84,76 @@ export function getOptimizedImageUrl(url: string | null): string {
   
   console.log(`[getOptimizedImageUrl] Final URL: ${finalUrl}`);
   return finalUrl;
+}
+
+/**
+ * Returns a publicly accessible URL for meta tags and social sharing
+ * 
+ * This function transforms internal URLs (django:8000, localhost:8000) to public URLs,
+ * and handles decoding of encoded external URLs for social media sharing.
+ * 
+ * @param url The image URL to transform
+ * @returns Public-friendly URL for meta tags
+ */
+export function getPublicImageUrl(url: string | null): string {
+  if (!url) return '';
+  
+  // If it's already an absolute URL from a public source (like Picsum)
+  if (url.startsWith('http') && !url.includes('django:8000') && !url.includes('localhost:8000')) {
+    // Check if it's an external URL that needs decoding
+    if (url.includes('%3A') || url.includes('%2F')) {
+      return decodeURIComponent(url);
+    }
+    return url;
+  }
+  
+  // Check for encoded or encapsulated external URLs
+  // Pattern 1: http://django:8000/media/https%3A/picsum.photos/...
+  const encodedExternalUrlMatch = url.match(/https?:\/\/[^\/]+\/media\/(https?(%3A|:).+)/i);
+  if (encodedExternalUrlMatch) {
+    const encodedPart = encodedExternalUrlMatch[1];
+    // Try to extract and decode the actual external URL
+    const decodedUrl = decodeURIComponent(encodedPart.replace(/%3A/g, ':'));
+    if (decodedUrl.startsWith('http')) {
+      return decodedUrl;
+    }
+  }
+  
+  // Pattern 2: http://django:8000/media/http:/picsum.photos/...
+  const directExternalUrlMatch = url.match(/https?:\/\/[^\/]+\/media\/(https?:\/\/.+)/i);
+  if (directExternalUrlMatch && directExternalUrlMatch[1]) {
+    return directExternalUrlMatch[1];
+  }
+  
+  // If it's an internal URL (starting with http://django:8000 or http://localhost:8000)
+  if (url.includes('django:8000')) {
+    return url.replace('http://django:8000', 'http://localhost:8000');
+  }
+  
+  // For relative URLs, prepend the public site URL (for meta tags)
+  if (url.startsWith('/')) {
+    // If it's a media URL from Django but doesn't contain an external URL
+    if (url.startsWith('/media/') && !url.includes('http')) {
+      return `http://localhost:8000${url}`;
+    }
+    return `${SITE_URL}${url}`;
+  } else {
+    // If it's a media URL from Django but doesn't contain an external URL
+    if (url.startsWith('media/') && !url.includes('http')) {
+      return `http://localhost:8000/${url}`;
+    }
+    return `${SITE_URL}/${url}`;
+  }
+}
+
+/**
+ * Generates a canonical URL for a page
+ * 
+ * @param path The path of the page (e.g., '/posts/my-post')
+ * @returns Absolute canonical URL
+ */
+export function getCanonicalUrl(path: string): string {
+  // Ensure path starts with '/' and remove any trailing '/'
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  return `${SITE_URL}${normalizedPath}`;
 } 

@@ -11,6 +11,7 @@ export interface Post {
   content?: string;
   featured_image: string | null;
   published_at: string;
+  updated_at?: string;
   reading_time: number;
   categories: {
     id: number;
@@ -60,12 +61,20 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
   const optimizedImageUrl = getOptimizedImageUrl(post.featured_image);
   console.log(`[PostCard] Final optimized URL for image: ${optimizedImageUrl}`);
 
+  // Create the post URL for the Link component
+  const postUrl = `/posts/${post.slug}`;
+
   return (
-    <div className={`
-      bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-all
-      hover:shadow-lg flex flex-col h-full
-      ${post.is_featured ? 'border-l-4 border-indigo-500' : ''}
-    `}>
+    <Link 
+      href={postUrl}
+      className={`
+        block bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden 
+        hover:shadow-lg transition-all hover:scale-[1.02]
+        flex flex-col h-full
+        ${post.is_featured ? 'border-l-4 border-indigo-500' : ''}
+      `}
+      aria-label={`Read more about ${post.title}`}
+    >
       {optimizedImageUrl && (
         <div className="relative h-40 sm:h-48 md:h-52 w-full">
           <Image
@@ -82,21 +91,24 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
       <div className="p-3 sm:p-4 md:p-5 flex-1 flex flex-col">
         <div className="flex flex-wrap gap-1 sm:gap-2 mb-2 sm:mb-3">
           {post.categories.map(category => (
-            <Link 
-              href={`/category/${category.slug}`} 
+            <span
               key={category.id}
-              className="text-xs bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full hover:bg-indigo-100 dark:hover:bg-indigo-900 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                window.location.href = `/category/${category.slug}`;
+              }}
+              className="text-xs bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full 
+                hover:bg-indigo-100 dark:hover:bg-indigo-900 transition-colors cursor-pointer"
             >
               {category.name}
-            </Link>
+            </span>
           ))}
         </div>
         
-        <Link href={`/posts/${post.slug}`} className="group mb-auto">
-          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2">
-            {post.title}
-          </h2>
-        </Link>
+        <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-2 
+          group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2">
+          {post.title}
+        </h2>
 
         <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 mb-3 md:mb-4 line-clamp-3">
           {post.excerpt || post.title}
@@ -109,7 +121,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
           <span className="text-xs sm:text-xs">{post.reading_time} min read</span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

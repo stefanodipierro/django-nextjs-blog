@@ -1,7 +1,12 @@
 # Active Context
 
 ## Current Focus
-The current focus is on improving website functionality and UX by enhancing existing features, fixing minor issues, and implementing advanced functionality.
+We are implementing URL optimization for images in meta tags and structured data, along with enhancing the featured post filtering system and standardizing canonical URLs. This involves:
+
+1. Optimizing image URLs for meta tags (Open Graph, Twitter Cards) and structured data (JSON-LD)
+2. Improving the Django API to handle external image URLs correctly
+3. Implementing category-based filtering for the Featured Posts section
+4. Standardizing canonical URLs and meta tags across all pages
 
 ## Recent Changes
 - Fixed Docker environment issues including container configuration
@@ -105,19 +110,53 @@ The current focus is on improving website functionality and UX by enhancing exis
   - Added proper loading states during category filtering
   - Ensured infinite scroll works correctly after category selection
   - Improved user experience with clearer feedback during filtering
+- Fixed React hydration error in date rendering:
+  - Modified PostCard component to use client-side only date formatting
+  - Prevented server/client HTML mismatch by using useState and useEffect
+  - Implemented conditional rendering based on component mount state
+  - Created a non-interactive superuser creation script for easier admin setup
+  - Updated .env.dev file with all required environment variables
+  - Committed and pushed changes to GitHub
 
 ## Next Steps
-- Address items in the 'Pending' section of progress.md:
-  - Django Admin enhancements - Phase 4 (Integration & Polish)
-  - Search implementation with PostgreSQL
-  - Media handling optimization
-  - Production deployment configuration
-  - Frontend caching optimizations
-  - CI/CD pipeline setup
-  - Documentation completion
-- Address known issues listed in progress.md
-- Consider caching strategies (SWR revalidation, DRF caching)
-- Set up proper testing framework (Jest + React Testing Library)
+- Create centralized utils functions for image URL handling
+- Update Django serializers to properly handle external URLs
+- Enhance meta tag implementation across all pages
+- Implement Featured Posts filtering by category
+- Test all metadata with validation tools
+
+## UI Enhancement Plan
+### Phase 1: Animation Consistency
+- Analyze animation differences between Featured Posts and Latest Posts cards
+- Choose one of two approaches:
+  - Option A: Apply same animations to all cards (scale + shadow + consistent border styling)
+  - Option B: Maintain clear visual distinction between Featured and Regular posts
+- Implement chosen approach in PostCard.tsx and FeaturedPosts.tsx
+
+### Phase 2: Card Interactivity
+- Modify PostCard.tsx to make the entire card area clickable
+- Ensure this is implemented in an accessible way (proper ARIA attributes)
+- Maintain clear visual indicators for interactive elements
+- Test across different devices and screen sizes
+
+### Phase 3: Open Graph and Meta Tag Optimization
+- Fix image URL issues in meta tags (remove internal URLs like http://django:8000)
+- Use direct URLs for external images (like Picsum) instead of encapsulated URLs
+- Ensure complete set of meta tags on all pages (homepage, posts, categories)
+- Add proper canonical URL tags
+- Implement environment-aware URL generation for production vs development
+
+### Phase 4: API Serializer Optimization
+- Update Django serializers to return direct URLs for external images
+- Simplify frontend image URL handling logic
+- Test image rendering across different scenarios
+
+### Phase 5: General UI Review
+- Check typography consistency
+- Verify color palette cohesion
+- Ensure proper spacing throughout the layout
+- Optimize contrast for accessibility
+- Test responsive behavior across various devices
 
 ## UX Polishing Plan
 
@@ -221,9 +260,10 @@ The current focus is on improving website functionality and UX by enhancing exis
 - **Post Grid Layout**: Responsive grid (3 columns on desktop, 2 on tablet, 1 on mobile)
 - **Data Fetching Strategy**: Server-side rendering for initial load with client-side for subsequent data
 - **Admin UI Strategy**: Custom admin theme with enhanced navigation, statistics dashboard, and environment indicator
-- **GitHub Workflow**: Repository setup and initial commits completed.
+- **GitHub Workflow**: Repository setup and initial commits completed
 - **Scheduled Publishing Strategy**: Implemented using Celery and celery-beat with 5-minute check intervals
 - **Category Filtering Strategy**: Improved with dynamic data fetching on category selection
+- **Date Rendering Strategy**: Client-side only date formatting to prevent hydration errors
 
 ## Current Challenges
 - Ensuring proper media file handling and optimization
@@ -233,6 +273,7 @@ The current focus is on improving website functionality and UX by enhancing exis
 - Implementing proper caching strategies
 - Addressing possible deployment considerations
 - Ensuring consistent environment experience across different operating systems (Windows/Linux)
+- Resolving meta tag and SEO issues with image URLs
 
 ## Ongoing Discussions
 - Best approach for implementing search functionality
@@ -242,4 +283,5 @@ The current focus is on improving website functionality and UX by enhancing exis
 - Caching strategies for API responses
 - Deployment workflow considerations
 - Potential CI/CD pipeline setup
-- GitHub workflow and contribution guidelines 
+- GitHub workflow and contribution guidelines
+- UI consistency and animation strategy 

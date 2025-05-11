@@ -42,17 +42,31 @@ class PostViewSet(viewsets.ReadOnlyModelViewSet):
 class FeaturedPostsAPIView(generics.ListAPIView):
     """
     API endpoint that returns featured posts.
+    
+    Can be filtered by category using the 'category' query parameter.
+    Example: /api/v1/featured-posts/?category=technology
     """
     serializer_class = PostListSerializer
     permission_classes = [AllowAny]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ['categories__slug']
+    ordering_fields = ['published_at']
+    ordering = ['-published_at']  # Default ordering
     
     def get_queryset(self):
-        return Post.objects.filter(
+        queryset = Post.objects.filter(
             status='published',
             is_featured=True
         ).prefetch_related(
             'categories', 'tags'
         )
+        
+        # Filter by category if provided in query params
+        category_slug = self.request.query_params.get('category')
+        if category_slug:
+            queryset = queryset.filter(categories__slug=category_slug)
+            
+        return queryset
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):

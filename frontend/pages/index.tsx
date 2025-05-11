@@ -6,6 +6,7 @@ import HeroSection from '../components/HeroSection';
 import CategoryNavBar from '../components/CategoryNavBar';
 import { getFeaturedPosts, getPosts, getActiveTheme, ThemeData } from '../lib/api';
 import { Post } from '../components/PostCard';
+import { getPublicImageUrl, getCanonicalUrl } from '../lib/utils';
 
 interface HomeProps {
   initialFeaturedPosts: Post[];
@@ -13,6 +14,9 @@ interface HomeProps {
   initialHasMore: boolean;
   initialTheme: ThemeData | null;
 }
+
+// Site URL from environment variable with fallback
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
 export async function getServerSideProps() {
   try {
@@ -66,6 +70,12 @@ const Home: React.FC<HomeProps> = ({
   const blogTitle = "Blog Template";
   const blogSubtitle = "A modern, minimalist blog built with Django, Next.js, and Tailwind CSS.";
   
+  // Get hero image URL for meta tags if available
+  const heroImageUrl = theme?.hero_image ? getPublicImageUrl(theme.hero_image) : null;
+  
+  // Canonical URL for homepage
+  const canonicalUrl = getCanonicalUrl('/');
+  
   // Refetch featured posts on client-side for fresh data
   useEffect(() => {
     const fetchFeaturedPosts = async () => {
@@ -105,28 +115,87 @@ const Home: React.FC<HomeProps> = ({
   }, [initialFeaturedPosts.length, initialTheme]);
   
   // Handle category selection
-  const handleCategorySelect = (categorySlug: string | null) => {
+  const handleCategorySelect = async (categorySlug: string | null) => {
     setSelectedCategory(categorySlug);
+    
+    // Update featured posts to only show those from the selected category
+    if (categorySlug) {
+      setIsLoadingFeatured(true);
+      try {
+        // Fetch featured posts with the selected category
+        const filteredFeaturedPosts = await getFeaturedPosts(categorySlug);
+        setFeaturedPosts(filteredFeaturedPosts);
+        setFeaturedError(null);
+      } catch (error) {
+        setFeaturedError(error instanceof Error ? error : new Error('Failed to load filtered featured posts'));
+        // Fallback to initial featured posts if filtering fails
+        setFeaturedPosts(initialFeaturedPosts);
+      } finally {
+        setIsLoadingFeatured(false);
+      }
+    } else {
+      // If no category is selected, revert to all featured posts
+      setFeaturedPosts(initialFeaturedPosts);
+    }
+    
     // Increment key to force PostGrid remount with new category
     setPostGridKey(prev => prev + 1);
+  };
+  
+  // Create JSON-LD schema data for the website
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": blogTitle,
+    "description": blogSubtitle,
+    "url": canonicalUrl,
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": `${SITE_URL}/search?q={search_term}`
+      },
+      "query-input": "required name=search_term"
+    }
   };
   
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
       <Head>
-        <title>Blog Template</title>
-        <meta name="description" content="A modern blog template built with Next.js and Django" />
-        <link rel="icon" href="/favicon.ico" />
+        <title>{blogTitle}</title>
+        <meta name="description" content={blogSubtitle} />
         
-        {/* OpenGraph meta tags for hero image */}
-        {theme?.hero_image && (
+        {/* Canonical URL */}
+        <link rel="canonical" href={canonicalUrl} />
+        
+        {/* OpenGraph meta tags */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={blogTitle} />
+        <meta property="og:description" content={blogSubtitle} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:site_name" content={blogTitle} />
+        
+        {/* Twitter Card meta tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={blogTitle} />
+        <meta name="twitter:description" content={blogSubtitle} />
+        
+        {/* OpenGraph hero image if available */}
+        {heroImageUrl && (
           <>
-            <meta property="og:image" content={theme.hero_image} />
-            <meta property="og:image:alt" content={theme.hero_image_alt || blogTitle} />
+            <meta property="og:image" content={heroImageUrl} />
+            <meta property="og:image:alt" content={theme?.hero_image_alt || blogTitle} />
             <meta property="og:image:width" content="1200" />
             <meta property="og:image:height" content="630" />
+            <meta name="twitter:image" content={heroImageUrl} />
           </>
         )}
+        
+        {/* JSON-LD structured data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </Head>
 
       <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-10 md:py-12">

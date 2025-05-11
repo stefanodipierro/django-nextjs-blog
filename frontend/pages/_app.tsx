@@ -7,8 +7,12 @@ import Footer from '../components/Footer';
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider attribute="class">
-      <Component {...pageProps} />
-      <Footer />
+      <div className="flex flex-col min-h-screen">
+        <div className="flex-grow pb-32">
+          <Component {...pageProps} />
+        </div>
+        <Footer />
+      </div>
     </ThemeProvider>
   );
 }

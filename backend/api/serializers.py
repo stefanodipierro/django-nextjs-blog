@@ -5,6 +5,59 @@ from newsletter.models import Subscriber
 from taggit.serializers import TagListSerializerField
 from utils.image_utils import generate_blur_placeholder
 from themes.models import ExtendedTheme
+import re
+
+
+def is_external_url(url):
+    """
+    Detect if a URL is an external URL (like Picsum or Unsplash)
+    """
+    if not url:
+        return False
+    
+    # Check if it's a standard URL that's not from this application
+    if url.startswith(('http://', 'https://')) and not url.startswith('http://django:8000') and not url.startswith('http://localhost:8000'):
+        return True
+    
+    # If it's a media URL containing an encoded external URL like /media/https%3A/picsum.photos/...
+    external_url_pattern = r'/media/(https?(%3A|:).+)'
+    match = re.search(external_url_pattern, url)
+    if match:
+        return True
+    
+    return False
+
+
+def get_direct_url(url):
+    """
+    Extract and decode direct URL from potentially encoded or encapsulated URLs
+    """
+    if not url:
+        return url
+    
+    # If already a direct external URL
+    if is_external_url(url) and not '/media/' in url:
+        return url
+    
+    # Try to extract external URL from media path
+    external_url_pattern = r'/media/(https?(%3A|:).+)'
+    match = re.search(external_url_pattern, url)
+    if match:
+        # Extract and properly decode the external URL
+        encoded_url = match.group(1)
+        decoded_url = encoded_url.replace('%3A', ':').replace('%2F', '/')
+        
+        # Handle more complex encoding if needed
+        if '%' in decoded_url:
+            try:
+                from urllib.parse import unquote
+                decoded_url = unquote(decoded_url)
+            except:
+                pass
+                
+        return decoded_url
+    
+    return url
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -18,6 +71,7 @@ class PostListSerializer(serializers.ModelSerializer):
     tags = TagListSerializerField()
     reading_time = serializers.IntegerField(read_only=True)
     blur_data_url = serializers.SerializerMethodField()
+    featured_image = serializers.SerializerMethodField()
     
     class Meta:
         model = Post
@@ -26,6 +80,16 @@ class PostListSerializer(serializers.ModelSerializer):
             'published_at', 'categories', 'tags', 'reading_time', 'is_featured',
             'blur_data_url'
         ]
+    
+    def get_featured_image(self, obj):
+        """Return direct URL for external images, or standard URL for internal images"""
+        if not obj.featured_image:
+            return None
+            
+        url = obj.featured_image.url
+        if is_external_url(url):
+            return get_direct_url(url)
+        return url
     
     def get_blur_data_url(self, obj):
         """Generate a blur data URL for the featured image"""
@@ -41,6 +105,9 @@ class PostDetailSerializer(serializers.ModelSerializer):
     blur_data_url = serializers.SerializerMethodField()
     side_image_1_blur = serializers.SerializerMethodField()
     side_image_2_blur = serializers.SerializerMethodField()
+    featured_image = serializers.SerializerMethodField()
+    side_image_1 = serializers.SerializerMethodField()
+    side_image_2 = serializers.SerializerMethodField()
     
     class Meta:
         model = Post
@@ -50,6 +117,36 @@ class PostDetailSerializer(serializers.ModelSerializer):
             'created_at', 'updated_at', 'published_at', 'categories', 
             'tags', 'reading_time', 'is_featured', 'blur_data_url'
         ]
+    
+    def get_featured_image(self, obj):
+        """Return direct URL for external images, or standard URL for internal images"""
+        if not obj.featured_image:
+            return None
+            
+        url = obj.featured_image.url
+        if is_external_url(url):
+            return get_direct_url(url)
+        return url
+    
+    def get_side_image_1(self, obj):
+        """Return direct URL for external images, or standard URL for internal images"""
+        if not obj.side_image_1:
+            return None
+            
+        url = obj.side_image_1.url
+        if is_external_url(url):
+            return get_direct_url(url)
+        return url
+    
+    def get_side_image_2(self, obj):
+        """Return direct URL for external images, or standard URL for internal images"""
+        if not obj.side_image_2:
+            return None
+            
+        url = obj.side_image_2.url
+        if is_external_url(url):
+            return get_direct_url(url)
+        return url
     
     def get_blur_data_url(self, obj):
         """Generate a blur data URL for the featured image"""
@@ -84,7 +181,18 @@ class ActiveThemeSerializer(serializers.ModelSerializer):
     # Use the related Theme's id and name
     id = serializers.IntegerField(source='theme.id')
     theme_name = serializers.CharField(source='theme.name')
+    hero_image = serializers.SerializerMethodField()
 
     class Meta:
         model = ExtendedTheme
-        fields = ['id', 'theme_name', 'hero_image', 'hero_image_alt', 'hero_box_color', 'show_navbar'] 
+        fields = ['id', 'theme_name', 'hero_image', 'hero_image_alt', 'hero_box_color', 'show_navbar']
+        
+    def get_hero_image(self, obj):
+        """Return direct URL for external images, or standard URL for internal images"""
+        if not obj.hero_image:
+            return None
+            
+        url = obj.hero_image.url
+        if is_external_url(url):
+            return get_direct_url(url)
+        return url 

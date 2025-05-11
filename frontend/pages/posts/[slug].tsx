@@ -8,7 +8,7 @@ import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import SocialShare from '../../components/SocialShare';
-import { getOptimizedImageUrl } from '../../lib/utils';
+import { getOptimizedImageUrl, getPublicImageUrl, getCanonicalUrl } from '../../lib/utils';
 
 interface PostPageProps {
   post: Post | null;
@@ -17,6 +17,7 @@ interface PostPageProps {
 // Generic blur placeholder SVG (10x10 grey) as fallback
 const FALLBACK_BLUR_PLACEHOLDER = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZGRkIi8+PC9zdmc+';
 
+// Get site URL from environment variable with fallback
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
@@ -33,27 +34,6 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   });
   return { props: { post } };
 };
-
-// Per i meta tag, usare sempre localhost:8000 anche se lato server
-function getMetaImageUrl(url: string | null): string {
-  if (!url) return '';
-  
-  // Se è già un URL assoluto, ritornalo così com'è
-  if (url.startsWith('http')) {
-    // Se contiene django:8000, sostituirlo con localhost:8000 per i meta tag
-    if (url.includes('django:8000')) {
-      return url.replace('http://django:8000', 'http://localhost:8000');
-    }
-    return url;
-  }
-  
-  // Per URL relativi, aggiungi sempre localhost:8000 (mai django:8000)
-  if (url.startsWith('/')) {
-    return `http://localhost:8000${url}`;
-  } else {
-    return `http://localhost:8000/${url}`;
-  }
-}
 
 const PostPage: React.FC<PostPageProps> = ({ post }) => {
   useEffect(() => {
@@ -78,7 +58,7 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
   console.log(`[PostPage] Server-side or Hydration, Post ${post.id} - ${post.title}`);
   console.log('[PostPage] Getting optimized image URLs');
 
-  // Get optimized image URLs
+  // Get optimized image URLs for rendering in the page
   const optimizedFeaturedImage = getOptimizedImageUrl(post.featured_image);
   const optimizedSideImage1 = getOptimizedImageUrl(post.side_image_1 || null);
   const optimizedSideImage2 = getOptimizedImageUrl(post.side_image_2 || null);
@@ -89,59 +69,119 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
     side2: optimizedSideImage2
   });
 
-  // Per i meta tag, usa sempre URL con localhost:8000 (non django:8000)
-  const clientFeaturedImage = getMetaImageUrl(post.featured_image);
-  const clientSideImage1 = getMetaImageUrl(post.side_image_1 || null);
-  const clientSideImage2 = getMetaImageUrl(post.side_image_2 || null);
+  // Get proper public URLs for meta tags
+  const metaFeaturedImage = getPublicImageUrl(post.featured_image);
+  const metaSideImage1 = getPublicImageUrl(post.side_image_1 || null);
+  const metaSideImage2 = getPublicImageUrl(post.side_image_2 || null);
 
   console.log('[PostPage] Meta tag image URLs:', {
-    featured: clientFeaturedImage,
-    side1: clientSideImage1,
-    side2: clientSideImage2
+    featured: metaFeaturedImage,
+    side1: metaSideImage1,
+    side2: metaSideImage2
   });
+
+  // Canonical URL for this post
+  const canonicalUrl = getCanonicalUrl(`/posts/${post.slug}`);
+
+  // Create JSON-LD schema data
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": post.title,
+    "description": post.excerpt || "",
+    "image": [
+      metaFeaturedImage,
+      metaSideImage1,
+      metaSideImage2
+    ].filter(Boolean),
+    "datePublished": post.published_at,
+    "dateModified": post.updated_at || post.published_at,
+    "author": {
+      "@type": "Organization",
+      "name": "Blog Admin"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Blog Template",
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${SITE_URL}/logo.png`
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": canonicalUrl
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
       <Head>
         <title>{post.title}</title>
         <meta name="description" content={post.excerpt || post.title} />
+        {/* Canonical URL */}
+        <link rel="canonical" href={canonicalUrl} />
+        
+        {/* Open Graph meta tags */}
+        <meta property="og:type" content="article" />
         <meta property="og:title" content={post.title} />
         <meta property="og:description" content={post.excerpt || post.title} />
-        <meta property="og:url" content={`${SITE_URL}/posts/${post.slug}`} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:site_name" content="Blog Template" />
+        <meta property="article:published_time" content={post.published_at} />
+        {post.updated_at && <meta property="article:modified_time" content={post.updated_at} />}
+        
+        {post.categories && post.categories.length > 0 && (
+          <meta property="article:section" content={post.categories[0].name} />
+        )}
+        
+        {post.tags && post.tags.length > 0 && post.tags.map((tag, index) => (
+          <meta key={index} property="article:tag" content={tag} />
+        ))}
+        
+        {/* Twitter Card meta tags */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={post.title} />
         <meta name="twitter:description" content={post.excerpt || post.title} />
+        
         {/* Dynamic OG images */}
-        {clientFeaturedImage && (
+        {metaFeaturedImage && (
           <>
-            <meta property="og:image" content={clientFeaturedImage} />
+            <meta property="og:image" content={metaFeaturedImage} />
             <meta property="og:image:alt" content={`${post.title} – Featured Image`} />
             <meta property="og:image:width" content="1200" />
             <meta property="og:image:height" content="630" />
           </>
         )}
-        {clientSideImage1 && (
+        {metaSideImage1 && (
           <>
-            <meta property="og:image" content={clientSideImage1} />
+            <meta property="og:image" content={metaSideImage1} />
             <meta property="og:image:alt" content={`${post.title} – Side Image 1`} />
             <meta property="og:image:width" content="1200" />
             <meta property="og:image:height" content="630" />
           </>
         )}
-        {clientSideImage2 && (
+        {metaSideImage2 && (
           <>
-            <meta property="og:image" content={clientSideImage2} />
+            <meta property="og:image" content={metaSideImage2} />
             <meta property="og:image:alt" content={`${post.title} – Side Image 2`} />
             <meta property="og:image:width" content="1200" />
             <meta property="og:image:height" content="630" />
           </>
         )}
+        
         {/* Twitter picks first available image */}
         <meta
           name="twitter:image"
           content={
-            clientFeaturedImage || clientSideImage1 || clientSideImage2 || ''
+            metaFeaturedImage || metaSideImage1 || metaSideImage2 || ''
           }
+        />
+        
+        {/* JSON-LD structured data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </Head>
 
@@ -215,30 +255,33 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
                     <div className="relative w-full sm:w-1/2 lg:w-1/3 float-right mb-6 lg:ml-6 h-48">
                       <Image
                         src={optimizedSideImage2}
-                        alt={`${post.title} side image`}
+                        alt={`${post.title} side image 2`}
                         fill
-                        placeholder="blur"
+                        placeholder="blur" 
                         blurDataURL={post.side_image_2_blur || FALLBACK_BLUR_PLACEHOLDER}
                         className="object-cover rounded-md"
                         sizes="(max-width: 640px) 100vw, (min-width: 641px) 33vw"
                       />
                     </div>
                   )}
-                  {/* Third segment */}
-                  <ReactMarkdown remarkPlugins={[remarkGfm]} className="prose dark:prose-invert max-w-none">
+                  {/* Final segment */}
+                  <ReactMarkdown remarkPlugins={[remarkGfm]} className="prose dark:prose-invert max-w-none mb-6">
                     {part3}
                   </ReactMarkdown>
                 </>
               );
             })()}
           </div>
-          {/* Social sharing buttons */}
-          <SocialShare title={post.title} />
+          
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-6 mt-6">
+            <SocialShare 
+              title={post.title} 
+              url={canonicalUrl} 
+              description={post.excerpt || ''} 
+              imageUrl={metaFeaturedImage} 
+            />
+          </div>
         </article>
-
-        <div className="mt-12">
-          <Link href="/" className="text-indigo-600 dark:text-indigo-400">← Back to Home</Link>
-        </div>
       </main>
     </div>
   );
