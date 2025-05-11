@@ -7,6 +7,8 @@
 - **Containerized Services**: Each service (Django, Postgres, Redis, Next.js) has its own container
 - **Environment-based Settings**: Different settings for development, testing, and production
 - **Frontend Component Isolation**: React components are organized by functionality and reusability
+- **Image URL Optimization**: External image URLs (like Picsum) are served directly rather than proxied through Django
+- **Meta Tag Standardization**: All meta tags use absolute URLs generated dynamically
 
 ## User Preferences
 - **Minimalist Design**: Clean, distraction-free interface with focus on content
@@ -15,6 +17,7 @@
 - **Zero User Accounts**: No user login or authentication required for reading
 - **Scheduled Publishing**: Content can be scheduled for future publication
 - **Image Optimization**: All images are automatically optimized for web
+- **Category Filtering**: Featured posts can be filtered by category for improved navigation
 
 ## Known Challenges
 - **Cross-Origin Requests**: Django backend and Next.js frontend run on different ports/domains
@@ -23,6 +26,7 @@
 - **Docker Development Workflow**: Keeping development experience smooth with containers
 - **API Performance**: Optimizing API responses for frontend consumption
 - **Dark Mode Implementation**: Consistent theming across all components
+- **External vs. Internal Image URLs**: Differentiating between local media and external image sources
 
 ## Implementation Paths
 - **Initial Setup**: Docker → Django Project → Next.js Project → Database
@@ -30,6 +34,7 @@
 - **Frontend Development**: Layout → Components → Pages → Theme → API Integration
 - **Feature Implementation**: Core Blog → Search → Featured Posts → Newsletter → Social
 - **Deployment Flow**: Local → CI/CD Pipeline → Staging → Production
+- **SEO Optimization**: Meta Tags → Structured Data → Canonical URLs → Open Graph
 
 ## Tool Usage
 - **Docker Compose**: Primary tool for development environment
@@ -38,7 +43,7 @@
 - **Django admin**: Content management
 - **DRF Browsable API**: API testing and documentation
 - **React DevTools**: Frontend debugging
-- **PostgreSQL CLI**: Database management
+- **PostgreSQL CLI**: Database database management
 - **Redis CLI**: Cache inspection
 
 ## Project Evolution
@@ -46,4 +51,10 @@
 - **Feature Expansion**: Add newsletter and social sharing after core is stable
 - **Performance Optimization**: Add caching and optimizations post-MVP
 - **Monitoring Addition**: Add analytics and monitoring as project matures
-- **Extension Points**: Design for future extensions without overengineering initially 
+- **Extension Points**: Design for future extensions without overengineering initially
+
+## URL Handling Strategies
+- **Internal Media**: URLs in the format `/media/posts/image.jpg` are transformed to `http://localhost:8000/media/posts/image.jpg` for rendering
+- **External Media**: URLs like `http://localhost:8000/media/https%3A//picsum.photos/...` are transformed to direct URLs `https://picsum.photos/...` for meta tags
+- **Canonical URLs**: All pages use absolute URLs (e.g., `http://localhost:3000/posts/my-post`) for canonical links and Open Graph tags
+- **Social Sharing**: Image URLs in social sharing links use direct external URLs whenever possible for better compatibility 
