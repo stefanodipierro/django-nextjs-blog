@@ -38,7 +38,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
   console.log(`[HeroSection] Optimized hero image URL: ${optimizedHeroImageUrl}`);
 
   return (
-    <div className="relative h-80 sm:h-96 md:h-[500px] w-full mb-12 overflow-hidden">
+    <div className="relative h-80 sm:h-96 md:h-[500px] w-full mb-12 overflow-hidden hero-placeholder">
       {/* Hero Image */}
       <Image
         src={optimizedHeroImageUrl}
@@ -46,7 +46,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         fill
         sizes="(max-width: 768px) 100vw, min(1280px, 90vw)"
         priority
+        fetchPriority="high"
         className="object-cover"
+        placeholder="blur"
+        blurDataURL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZjNmNGY2Ii8+PC9zdmc+"
       />
       
       {/* Overlay to ensure text is readable */}

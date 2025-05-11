@@ -122,6 +122,16 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
         {/* Canonical URL */}
         <link rel="canonical" href={canonicalUrl} />
         
+        {/* Preload featured image for faster LCP */}
+        {metaFeaturedImage && (
+          <link 
+            rel="preload" 
+            href={metaFeaturedImage} 
+            as="image" 
+            fetchPriority="high" 
+          />
+        )}
+        
         {/* Open Graph meta tags */}
         <meta property="og:type" content="article" />
         <meta property="og:title" content={post.title} />
@@ -208,6 +218,7 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
                 fill
                 priority
                 placeholder="blur"
+                fetchPriority="high"
                 blurDataURL={post.blur_data_url || FALLBACK_BLUR_PLACEHOLDER}
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, min(1200px, 100%)"
