@@ -84,7 +84,7 @@ const FeaturedPosts: React.FC<FeaturedPostsProps> = ({ posts, isLoading, error }
               aria-label={`Read more about ${post.title}`}
             >
               {optimizedImageUrl && (
-                <div className="relative h-48 w-full image-container">
+                <div className="relative h-48 w-full">
                   <Image
                     src={optimizedImageUrl}
                     alt={post.title}

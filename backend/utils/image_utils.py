@@ -4,6 +4,7 @@ from PIL import Image
 from django.core.files.storage import default_storage
 from urllib.parse import urljoin
 from django.conf import settings
+import os
 
 def generate_blur_placeholder(image_url, size=(10, 10)):
     """
@@ -60,3 +61,22 @@ def generate_blur_placeholder(image_url, size=(10, 10)):
     except Exception as e:
         print(f"Error generating placeholder for {image_url}: {e}")
         return fallback 
+
+def generate_webp(image_field):
+    """
+    Given a Django ImageField, generate a .webp version in the same directory.
+    Returns the path to the .webp file.
+    """
+    if not image_field:
+        return None
+    original_path = image_field.path
+    webp_path = os.path.splitext(original_path)[0] + '.webp'
+    if os.path.exists(webp_path):
+        return webp_path
+    try:
+        img = Image.open(original_path)
+        img.save(webp_path, 'webp', quality=85)
+        return webp_path
+    except Exception as e:
+        print(f'Error generating webp: {e}')
+        return None 

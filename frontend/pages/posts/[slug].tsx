@@ -122,15 +122,6 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
         {/* Canonical URL */}
         <link rel="canonical" href={canonicalUrl} />
         
-        {/* Preload featured image for faster LCP */}
-        {metaFeaturedImage && (
-          <link 
-            rel="preload" 
-            href={metaFeaturedImage} 
-            as="image" 
-          />
-        )}
-        
         {/* Open Graph meta tags */}
         <meta property="og:type" content="article" />
         <meta property="og:title" content={post.title} />
@@ -210,14 +201,13 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
           </div>
 
           {optimizedFeaturedImage && (
-            <div className="relative w-full h-64 md:h-96 mb-8 image-container" style={{ contain: 'layout size style' }}>
+            <div className="relative w-full h-64 md:h-96 mb-8">
               <Image
                 src={optimizedFeaturedImage}
                 alt={post.title}
                 fill
                 priority
                 placeholder="blur"
-                quality={60}
                 blurDataURL={post.blur_data_url || FALLBACK_BLUR_PLACEHOLDER}
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, min(1200px, 100%)"
@@ -244,7 +234,7 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
                   </ReactMarkdown>
                   {/* First side image */}
                   {optimizedSideImage1 && (
-                    <div className="relative w-full sm:w-1/2 lg:w-1/3 float-left mb-6 lg:mr-6 h-48 image-container" style={{ contain: 'layout size' }}>
+                    <div className="relative w-full sm:w-1/2 lg:w-1/3 float-left mb-6 lg:mr-6 h-48">
                       <Image
                         src={optimizedSideImage1}
                         alt={`${post.title} side image`}
@@ -262,7 +252,7 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
                   </ReactMarkdown>
                   {/* Second side image */}
                   {optimizedSideImage2 && (
-                    <div className="relative w-full sm:w-1/2 lg:w-1/3 float-right mb-6 lg:ml-6 h-48 image-container" style={{ contain: 'layout size' }}>
+                    <div className="relative w-full sm:w-1/2 lg:w-1/3 float-right mb-6 lg:ml-6 h-48">
                       <Image
                         src={optimizedSideImage2}
                         alt={`${post.title} side image 2`}

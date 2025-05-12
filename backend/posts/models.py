@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 from markdownx.models import MarkdownxField
 from taggit.managers import TaggableManager
+from utils.image_utils import generate_webp
 
 
 class Post(models.Model):
@@ -48,6 +49,12 @@ class Post(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+        if self.featured_image:
+            generate_webp(self.featured_image)
+        if self.side_image_1:
+            generate_webp(self.side_image_1)
+        if self.side_image_2:
+            generate_webp(self.side_image_2)
     
     def get_absolute_url(self):
         return f"/posts/{self.slug}/"

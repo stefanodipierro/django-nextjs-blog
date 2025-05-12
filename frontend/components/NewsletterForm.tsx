@@ -26,7 +26,7 @@ const NewsletterForm: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-100 dark:bg-gray-800 p-6 rounded-md text-center">
+    <div className="bg-gray-100 dark:bg-gray-800 py-3 px-4 rounded-md text-center">
       <div className="flex justify-center lg:justify-end">
         <div className="w-full max-w-md sm:max-w-lg">
           <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100 text-left">
@@ -52,6 +52,9 @@ const NewsletterForm: React.FC = () => {
           {message && (
             <p className={`mt-4 ${status === 'success' ? 'text-green-600' : 'text-red-600'}`}>{message}</p>
           )}
+          <div className="mt-3 text-left text-xs text-gray-500 dark:text-gray-400">
+            &copy; {new Date().getFullYear()} Blog Template. All rights reserved.
+          </div>
         </div>
       </div>
     </div>

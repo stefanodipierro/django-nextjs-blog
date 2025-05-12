@@ -76,7 +76,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
       aria-label={`Read more about ${post.title}`}
     >
       {optimizedImageUrl && (
-        <div className="relative h-40 sm:h-48 md:h-52 w-full image-container">
+        <div className="relative h-40 sm:h-48 md:h-52 w-full">
           <Image
             src={optimizedImageUrl}
             alt={post.title}

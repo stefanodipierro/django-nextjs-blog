@@ -38,18 +38,17 @@ const HeroSection: React.FC<HeroSectionProps> = ({
   console.log(`[HeroSection] Optimized hero image URL: ${optimizedHeroImageUrl}`);
 
   return (
-    <div className="relative h-80 sm:h-96 md:h-[500px] w-full mb-12 overflow-hidden hero-placeholder" style={{ contain: 'layout paint size' }}>
+    <div className="relative h-80 sm:h-96 md:h-[500px] w-full mb-12 overflow-hidden">
       {/* Hero Image */}
       <Image
         src={optimizedHeroImageUrl}
         alt={theme.hero_image_alt || title}
         fill
-        sizes="(max-width: 768px) 100vw, min(1280px, 90vw)"
+        sizes="(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 1280px"
         priority
+        fetchPriority="high"
+        quality={70}
         className="object-cover"
-        placeholder="blur"
-        quality={60}
-        blurDataURL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+PHJlY3Qgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiBmaWxsPSIjZjNmNGY2Ii8+PC9zdmc+"
       />
       
       {/* Overlay to ensure text is readable */}

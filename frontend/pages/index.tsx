@@ -168,15 +168,6 @@ const Home: React.FC<HomeProps> = ({
         {/* Canonical URL */}
         <link rel="canonical" href={canonicalUrl} />
         
-        {/* Preload hero image for faster LCP */}
-        {heroImageUrl && (
-          <link 
-            rel="preload" 
-            href={heroImageUrl} 
-            as="image" 
-          />
-        )}
-        
         {/* OpenGraph meta tags */}
         <meta property="og:type" content="website" />
         <meta property="og:title" content={blogTitle} />

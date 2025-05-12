@@ -112,6 +112,18 @@ export function getOptimizedImageUrl(url: string | null): string {
     }
   }
   
+  // Force WebP for Picsum
+  if (finalUrl && finalUrl.includes('picsum.photos') && !finalUrl.endsWith('.webp')) {
+    // Only append .webp if not already present and if no extension is present
+    if (!/\.(jpg|jpeg|png|webp|gif|svg)$/.test(finalUrl)) {
+      finalUrl += '.webp';
+    }
+  }
+  // Optionally, force WebP for Unsplash
+  if (finalUrl && finalUrl.includes('images.unsplash.com') && !finalUrl.includes('fm=webp')) {
+    finalUrl += (finalUrl.includes('?') ? '&' : '?') + 'fm=webp';
+  }
+  
   console.log(`[getOptimizedImageUrl] Final URL: ${finalUrl}`);
   return finalUrl;
 }
