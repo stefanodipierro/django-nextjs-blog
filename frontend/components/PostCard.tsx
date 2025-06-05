@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getOptimizedImageUrl } from '../lib/utils';
+import { devLog } from '../lib/logger';
 
 export interface Post {
   id: number;
@@ -39,8 +40,8 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
   const [formattedDate, setFormattedDate] = useState<string>('');
 
   useEffect(() => {
-    console.log(`[PostCard] Post ID: ${post.id}, Title: ${post.title}`);
-    console.log(`[PostCard] Original featured_image URL: ${post.featured_image}`);
+    devLog(`[PostCard] Post ID: ${post.id}, Title: ${post.title}`);
+    devLog(`[PostCard] Original featured_image URL: ${post.featured_image}`);
     
     // Format the date on the client side only
     const date = new Date(post.published_at);
@@ -57,9 +58,9 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
   const blurDataURL = post.blur_data_url || FALLBACK_BLUR_PLACEHOLDER;
   
   // Get optimized image URL
-  console.log(`[PostCard] Getting optimized URL for post ${post.id}`);
+  devLog(`[PostCard] Getting optimized URL for post ${post.id}`);
   const optimizedImageUrl = getOptimizedImageUrl(post.featured_image);
-  console.log(`[PostCard] Final optimized URL for image: ${optimizedImageUrl}`);
+  devLog(`[PostCard] Final optimized URL for image: ${optimizedImageUrl}`);
 
   // Create the post URL for the Link component
   const postUrl = `/posts/${post.slug}`;
