@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import PostCard, { Post } from './PostCard';
 import PostSkeletonGrid from './PostSkeletonGrid';
 import { getPosts } from '../lib/api';
+import { devLog } from '../lib/logger';
 
 interface PostGridProps {
   initialPosts: Post[];
@@ -48,7 +49,7 @@ const PostGrid: React.FC<PostGridProps> = ({
     const fetchInitialPosts = async () => {
       try {
         setIsLoading(true);
-        console.log(`Fetching initial posts for category: ${category}, search: ${search}`);
+        devLog(`Fetching initial posts for category: ${category}, search: ${search}`);
         
         const result = await getPosts(1, pageSize, category, search);
         

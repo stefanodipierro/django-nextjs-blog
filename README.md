@@ -56,6 +56,7 @@ A modern, minimalist blog template built with Django, Docker, and Next.js. The t
 - `backend/`: Django backend
 - `frontend/`: Next.js frontend
 - `docker-compose.yml`: Docker Compose configuration
+- `docker-compose.prod.yml`: Production Docker Compose configuration (uses `.env.prod`)
 - `.env.dev`: Development environment variables
 - `.env.prod`: Production environment variables (copy from `.env.prod.example` and customize)
 - Temporary test files (`frontend/pages/index.test.tsx`, `frontend/components/IntersectionObserverTest.js`) and a stale `performance.json` were removed.
@@ -91,11 +92,6 @@ Changes to the frontend code will automatically trigger a hot reload.
 
 For production deployment:
 
-1. Create a `.env.prod` file from `.env.prod.example` with your production values (set `DEBUG=False` and update database, cache, and allowed host settings).
-2. Build and run the containers with production configuration:
-   ```bash
-   docker-compose -f docker-compose.prod.yml up -d
-   ```
 
 ## License
 
@@ -115,9 +111,7 @@ This project dynamically generates OpenGraph and Twitter meta tags for each post
   - Adds `<link rel="canonical">` pointing to the full post URL.
 - **Schema.org JSON-LD:**
   - Injects an `Article` schema block with:
-    - `headline`, `description`, `datePublished`
-    - `image` (array of all provided images)
-    - `mainEntityOfPage` (the post URL)
+
 
 ### Validation & Testing
 

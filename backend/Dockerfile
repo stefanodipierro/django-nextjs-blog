@@ -32,7 +32,8 @@ COPY . /app/
 # Create necessary directories and set permissions
 RUN mkdir -p /app/logs && \
     chown -R ${CELERY_USER}:${CELERY_GROUP} /app/logs && \
-    chmod +x /app/scripts/run-celery.sh
+    chmod +x /app/scripts/run-celery.sh && \
+    chown ${CELERY_USER}:${CELERY_GROUP} /app/scripts/run-celery.sh
 
 # Run entrypoint script
 COPY ./entrypoint.sh /app/entrypoint.sh
