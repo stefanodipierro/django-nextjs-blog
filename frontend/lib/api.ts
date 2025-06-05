@@ -1,20 +1,28 @@
 import { Post } from '../components/PostCard';
 
+const isDev = process.env.NODE_ENV === 'development';
+
 // Determine execution environment (server/container vs browser)
 const isServer = typeof window === 'undefined';
-console.log(`[API] isServer: ${isServer}`);
+if (isDev) {
+  console.log(`[API] isServer: ${isServer}`);
+}
 
 // Use different base URLs depending on where code is executing
 const API_URL = isServer
   ? process.env.NEXT_PUBLIC_INTERNAL_API_URL || 'http://django:8000/api/v1'
   : process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
-console.log(`[API] Using API_URL: ${API_URL}`);
+if (isDev) {
+  console.log(`[API] Using API_URL: ${API_URL}`);
+}
 
 // Derive the base URL for media assets (remove '/api/v1' from API_URL)
 const MEDIA_BASE_URL = isServer
   ? (process.env.NEXT_PUBLIC_INTERNAL_API_URL || 'http://django:8000').replace(/\/api\/v1\/?$/, '')
   : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000').replace(/\/api\/v1\/?$/, '');
-console.log(`[API] Using MEDIA_BASE_URL: ${MEDIA_BASE_URL}`);
+if (isDev) {
+  console.log(`[API] Using MEDIA_BASE_URL: ${MEDIA_BASE_URL}`);
+}
 
 /**
  * Helper function to transform relative image URLs to absolute URLs
@@ -36,19 +44,31 @@ function transformPostImageUrls(post: Post): Post {
   if (post.featured_image) {
     const originalUrl = post.featured_image;
     post.featured_image = transformImageUrl(post.featured_image);
-    console.log(`[API:transform] Post ${post.id} featured_image: ${originalUrl} -> ${post.featured_image}`);
+    if (isDev) {
+      console.log(
+        `[API:transform] Post ${post.id} featured_image: ${originalUrl} -> ${post.featured_image}`
+      );
+    }
   }
   
   if (post.side_image_1) {
     const originalUrl = post.side_image_1;
     post.side_image_1 = transformImageUrl(post.side_image_1);
-    console.log(`[API:transform] Post ${post.id} side_image_1: ${originalUrl} -> ${post.side_image_1}`);
+    if (isDev) {
+      console.log(
+        `[API:transform] Post ${post.id} side_image_1: ${originalUrl} -> ${post.side_image_1}`
+      );
+    }
   }
   
   if (post.side_image_2) {
     const originalUrl = post.side_image_2;
     post.side_image_2 = transformImageUrl(post.side_image_2);
-    console.log(`[API:transform] Post ${post.id} side_image_2: ${originalUrl} -> ${post.side_image_2}`);
+    if (isDev) {
+      console.log(
+        `[API:transform] Post ${post.id} side_image_2: ${originalUrl} -> ${post.side_image_2}`
+      );
+    }
   }
   
   return post;
@@ -78,7 +98,9 @@ export async function getFeaturedPosts(category?: string | null): Promise<Post[]
       url += `?category=${encodeURIComponent(category)}`;
     }
     
-    console.log(`[API:getFeaturedPosts] Fetching from ${url}`);
+    if (isDev) {
+      console.log(`[API:getFeaturedPosts] Fetching from ${url}`);
+    }
     const response = await fetch(url);
     
     if (!response.ok) {
@@ -89,12 +111,16 @@ export async function getFeaturedPosts(category?: string | null): Promise<Post[]
     // Some endpoints might wrap results in { results: [] }
     const results = Array.isArray(data) ? data : data.results || [];
     
-    console.log(`[API:getFeaturedPosts] Got ${results.length} posts${category ? ` for category ${category}` : ''}`);
+    if (isDev) {
+      console.log(
+        `[API:getFeaturedPosts] Got ${results.length} posts${category ? ` for category ${category}` : ''}`
+      );
+    }
     
     // Transform image URLs in all posts
     const transformedResults = results.map((post: Post) => transformPostImageUrls(post));
     
-    if (transformedResults.length > 0) {
+    if (transformedResults.length > 0 && isDev) {
       console.log(`[API:getFeaturedPosts] Sample transformed image URLs:`, {
         post_id: transformedResults[0].id,
         featured_image: transformedResults[0].featured_image
@@ -113,7 +139,9 @@ export async function getFeaturedPosts(category?: string | null): Promise<Post[]
  */
 export async function getActiveTheme(): Promise<ThemeData | null> {
   try {
-    console.log(`[API:getActiveTheme] Fetching from ${API_URL}/theme/`);
+    if (isDev) {
+      console.log(`[API:getActiveTheme] Fetching from ${API_URL}/theme/`);
+    }
     const response = await fetch(`${API_URL}/theme/`);
     if (!response.ok) {
       throw new Error(`Error fetching theme data: ${response.status}`);
@@ -121,11 +149,15 @@ export async function getActiveTheme(): Promise<ThemeData | null> {
     
     // Parse and transform hero_image to full URL for remote loading
     const data = (await response.json()) as ThemeData;
-    console.log(`[API:getActiveTheme] Original hero_image: ${data.hero_image}`);
+    if (isDev) {
+      console.log(`[API:getActiveTheme] Original hero_image: ${data.hero_image}`);
+    }
     
     if (data.hero_image) {
       data.hero_image = transformImageUrl(data.hero_image);
-      console.log(`[API:getActiveTheme] Transformed hero_image: ${data.hero_image}`);
+      if (isDev) {
+        console.log(`[API:getActiveTheme] Transformed hero_image: ${data.hero_image}`);
+      }
     }
     
     return data;
@@ -160,7 +192,9 @@ export async function getPosts(
     if (search) {
       url += `&search=${encodeURIComponent(search)}`;
     }
-    console.log(`[API:getPosts] Fetching from ${url}`);
+    if (isDev) {
+      console.log(`[API:getPosts] Fetching from ${url}`);
+    }
     
     const response = await fetch(url);
     
@@ -171,12 +205,16 @@ export async function getPosts(
     const data = await response.json();
     const results = Array.isArray(data) ? data : data.results || [];
     
-    console.log(`[API:getPosts] Got ${results.length} posts, hasMore: ${!!data.next}, total: ${data.count || results.length}`);
+    if (isDev) {
+      console.log(
+        `[API:getPosts] Got ${results.length} posts, hasMore: ${!!data.next}, total: ${data.count || results.length}`
+      );
+    }
     
     // Transform image URLs in all posts
     const transformedResults = results.map((post: Post) => transformPostImageUrls(post));
     
-    if (transformedResults.length > 0) {
+    if (transformedResults.length > 0 && isDev) {
       console.log(`[API:getPosts] Sample transformed image URLs:`, {
         post_id: transformedResults[0].id,
         featured_image: transformedResults[0].featured_image
@@ -200,28 +238,34 @@ export async function getPosts(
 
 export async function getPost(slug: string): Promise<Post | null> {
   try {
-    console.log(`[API:getPost] Fetching post ${slug} from ${API_URL}/posts/${slug}/`);
+    if (isDev) {
+      console.log(`[API:getPost] Fetching post ${slug} from ${API_URL}/posts/${slug}/`);
+    }
     const response = await fetch(`${API_URL}/posts/${slug}/`);
     if (!response.ok) {
       if (response.status === 404) return null;
       throw new Error(`Error fetching post: ${response.status}`);
     }
     const post = await response.json() as Post;
-    console.log(`[API:getPost] Got post ${post.id} - ${post.title}`);
-    console.log(`[API:getPost] Original image URLs:`, {
-      featured_image: post.featured_image,
-      side_image_1: post.side_image_1,
-      side_image_2: post.side_image_2
-    });
+    if (isDev) {
+      console.log(`[API:getPost] Got post ${post.id} - ${post.title}`);
+      console.log(`[API:getPost] Original image URLs:`, {
+        featured_image: post.featured_image,
+        side_image_1: post.side_image_1,
+        side_image_2: post.side_image_2
+      });
+    }
     
     // Transform image URLs
     const transformedPost = transformPostImageUrls(post);
-    
-    console.log(`[API:getPost] Transformed image URLs:`, {
-      featured_image: transformedPost.featured_image,
-      side_image_1: transformedPost.side_image_1,
-      side_image_2: transformedPost.side_image_2
-    });
+
+    if (isDev) {
+      console.log(`[API:getPost] Transformed image URLs:`, {
+        featured_image: transformedPost.featured_image,
+        side_image_1: transformedPost.side_image_1,
+        side_image_2: transformedPost.side_image_2
+      });
+    }
     
     return transformedPost;
   } catch (error) {
