@@ -34,8 +34,8 @@ A modern, minimalist blog template built with Django, Docker, and Next.js. The t
 
 2. Create environment files:
    ```bash
-   # Copy the example environment file for development
-   cp .env.example .env.dev
+   # Copy the development environment example
+   cp .env.dev.example .env.dev
    # Copy the production example environment file
    cp .env.prod.example .env.prod
    # Edit the .env.dev and .env.prod files as needed
@@ -57,7 +57,9 @@ A modern, minimalist blog template built with Django, Docker, and Next.js. The t
 - `frontend/`: Next.js frontend
 - `docker-compose.yml`: Docker Compose configuration
 - `docker-compose.prod.yml`: Production Docker Compose configuration (uses `.env.prod`)
+- `.env.dev.example`: Example development environment variables (copy to `.env.dev`)
 - `.env.dev`: Development environment variables
+- `.env.prod.example`: Example production environment variables
 - `.env.prod`: Production environment variables (copy from `.env.prod.example` and customize)
 - Temporary test files (`frontend/pages/index.test.tsx`, `frontend/components/IntersectionObserverTest.js`) and a stale `performance.json` were removed.
 
