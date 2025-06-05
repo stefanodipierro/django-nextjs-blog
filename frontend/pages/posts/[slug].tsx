@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeSanitize from 'rehype-sanitize';
 import SocialShare from '../../components/SocialShare';
 import { getOptimizedImageUrl, getPublicImageUrl, getCanonicalUrl } from '../../lib/utils';
 
@@ -241,7 +242,7 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
               return (
                 <>
                   {/* First segment */}
-                  <ReactMarkdown remarkPlugins={[remarkGfm]} className="prose dark:prose-invert max-w-none mb-6">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeSanitize]} className="prose dark:prose-invert max-w-none mb-6">
                     {part1}
                   </ReactMarkdown>
                   {/* First side image */}
@@ -259,7 +260,7 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
                     </div>
                   )}
                   {/* Second segment */}
-                  <ReactMarkdown remarkPlugins={[remarkGfm]} className="prose dark:prose-invert max-w-none mb-6">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeSanitize]} className="prose dark:prose-invert max-w-none mb-6">
                     {part2}
                   </ReactMarkdown>
                   {/* Second side image */}
@@ -277,7 +278,7 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
                     </div>
                   )}
                   {/* Final segment */}
-                  <ReactMarkdown remarkPlugins={[remarkGfm]} className="prose dark:prose-invert max-w-none mb-6">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeSanitize]} className="prose dark:prose-invert max-w-none mb-6">
                     {part3}
                   </ReactMarkdown>
                 </>
