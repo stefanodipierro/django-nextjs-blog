@@ -29,7 +29,7 @@ module.exports = {
       },
       {
         protocol: 'https',
-        hostname: '**.unsplash.com',
+        hostname: '*.unsplash.com',
       },
       {
         protocol: 'https',
