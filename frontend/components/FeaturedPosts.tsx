@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { Post } from './PostCard';
 import PostCardSkeleton from './PostCardSkeleton';
 import { getOptimizedImageUrl } from '../lib/utils';
+import { devLog } from '../lib/logger';
 
 interface FeaturedPostsProps {
   posts: Post[];
@@ -62,7 +63,7 @@ const FeaturedPosts: React.FC<FeaturedPostsProps> = ({ posts, isLoading, error }
     return null;
   }
 
-  console.log(`[FeaturedPosts] Rendering ${posts.length} featured posts`);
+  devLog(`[FeaturedPosts] Rendering ${posts.length} featured posts`);
 
   return (
     <section className="mb-12">
@@ -70,11 +71,11 @@ const FeaturedPosts: React.FC<FeaturedPostsProps> = ({ posts, isLoading, error }
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {posts.map((post) => {
-          console.log(`[FeaturedPosts] Processing post ${post.id}, with image ${post.featured_image}`);
+          devLog(`[FeaturedPosts] Processing post ${post.id}, with image ${post.featured_image}`);
           
           // Get optimized image URL
           const optimizedImageUrl = getOptimizedImageUrl(post.featured_image);
-          console.log(`[FeaturedPosts] Optimized URL for post ${post.id}: ${optimizedImageUrl}`);
+          devLog(`[FeaturedPosts] Optimized URL for post ${post.id}: ${optimizedImageUrl}`);
           
           return (
             <Link 

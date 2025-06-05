@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getCategories, CategoryData } from '../lib/api';
+import { devLog } from '../lib/logger';
 
 interface CategoryNavBarProps {
   onCategorySelect: (slug: string | null) => void;
@@ -19,11 +20,11 @@ const CategoryNavBar: React.FC<CategoryNavBarProps> = ({
   // Fetch categories on component mount
   useEffect(() => {
     const fetchCategories = async () => {
-      console.log("🔍 [NavBar] fetching categories…");
+      devLog('🔍 [NavBar] fetching categories…');
       try {
         setIsLoading(true);
         const data = await getCategories();
-        console.log("✅ [NavBar] fetched categories:", data);
+        devLog('✅ [NavBar] fetched categories:', data);
         setCategories(data);
         setError(null);
       } catch (err) {
