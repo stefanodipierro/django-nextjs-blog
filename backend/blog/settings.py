@@ -10,8 +10,9 @@ env = environ.Env(
 # Build paths inside the project
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Take environment variables from .env file
-environ.Env.read_env(os.path.join(BASE_DIR.parent, '.env.dev'))
+# Take environment variables from the file specified by ENV_FILE
+env_file = os.environ.get('ENV_FILE', '.env.dev')
+environ.Env.read_env(os.path.join(BASE_DIR.parent, env_file))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')

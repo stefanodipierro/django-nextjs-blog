@@ -92,7 +92,11 @@ Changes to the frontend code will automatically trigger a hot reload.
 For production deployment:
 
 1. Create a `.env.prod` file with your production values (set `DEBUG=False` and update database, cache, and allowed host settings).
-2. Build and run the containers with production configuration:
+2. Set the `ENV_FILE` environment variable so Django reads the correct file:
+   ```bash
+   export ENV_FILE=.env.prod
+   ```
+3. Build and run the containers with production configuration:
    ```bash
    docker-compose -f docker-compose.prod.yml up -d
    ```
