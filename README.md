@@ -69,6 +69,10 @@ Default superuser credentials (create yours with the command below):
 docker-compose exec django python manage.py createsuperuser
 ```
 
+When running the Celery Beat service, a `celerybeat-schedule` file is generated
+in the `backend` directory to persist periodic task schedules. This file is
+ignored by Git and will be recreated automatically whenever Celery Beat starts.
+
 ### Frontend Development
 
 The Next.js frontend is accessible at http://localhost:3000.
