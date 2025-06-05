@@ -56,6 +56,7 @@ A modern, minimalist blog template built with Django, Docker, and Next.js. The t
 - `docker-compose.yml`: Docker Compose configuration
 - `.env.dev`: Development environment variables
 - `.env.prod`: Production environment variables (create for production)
+- Temporary test files (`frontend/pages/index.test.tsx`, `frontend/components/IntersectionObserverTest.js`) and a stale `performance.json` were removed.
 
 ## Development Workflow
 
