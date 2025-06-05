@@ -44,7 +44,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    command: celery -A blog worker -l INFO
+    command: /app/scripts/run-celery.sh worker
     volumes:
       - ./backend:/app
     env_file:
@@ -59,7 +59,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    command: celery -A blog beat -l INFO
+    command: /app/scripts/run-celery.sh beat
     volumes:
       - ./backend:/app
     env_file:
