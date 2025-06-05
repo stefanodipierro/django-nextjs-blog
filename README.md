@@ -71,6 +71,13 @@ docker-compose exec django python manage.py createsuperuser
 ### Frontend Development
 
 The Next.js frontend is accessible at http://localhost:3000.
+The project uses **npm** for package management.
+Run the development server with:
+
+```bash
+npm run dev
+```
+
 Changes to the frontend code will automatically trigger a hot reload.
 
 ## Production Deployment

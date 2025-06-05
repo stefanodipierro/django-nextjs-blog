@@ -1,5 +1,7 @@
 FROM node:18-alpine
 
+# This project uses npm for managing frontend packages
+
 # Set working directory
 WORKDIR /app
 
