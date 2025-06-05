@@ -34,8 +34,8 @@ A modern, minimalist blog template built with Django, Docker, and Next.js. The t
 
 2. Create environment files:
    ```bash
-   # Copy the example environment file for development
-   cp .env.example .env.dev
+   # Copy the development environment example
+   cp .env.dev.example .env.dev
    # Copy the production example environment file
    cp .env.prod.example .env.prod
    # Edit the .env.dev and .env.prod files as needed
@@ -57,7 +57,9 @@ A modern, minimalist blog template built with Django, Docker, and Next.js. The t
 - `frontend/`: Next.js frontend
 - `docker-compose.yml`: Docker Compose configuration
 - `docker-compose.prod.yml`: Production Docker Compose configuration (uses `.env.prod`)
+- `.env.dev.example`: Example development environment variables (copy to `.env.dev`)
 - `.env.dev`: Development environment variables
+- `.env.prod.example`: Example production environment variables
 - `.env.prod`: Production environment variables (copy from `.env.prod.example` and customize)
 - Temporary test files (`frontend/pages/index.test.tsx`, `frontend/components/IntersectionObserverTest.js`) and a stale `performance.json` were removed.
 
@@ -117,4 +119,18 @@ This project dynamically generates OpenGraph and Twitter meta tags for each post
 
 - Use Facebook OpenGraph Debugger (https://developers.facebook.com/tools/debug/) to confirm OG tags.
 - Use Twitter Card Validator (https://cards-dev.twitter.com/validator) for Twitter cards.
-- Run Lighthouse or other SEO audit tools to ensure meta-tag coverage. 
+- Run Lighthouse or other SEO audit tools to ensure meta-tag coverage.
+
+### Running Tests
+
+Automated tests cover both the Django API and basic Next.js components.
+
+```bash
+# Backend
+python backend/manage.py test api --settings=blog.test_settings
+
+# Frontend
+npm test --prefix frontend
+```
+
+These same commands run in the CI workflow.
