@@ -34,9 +34,11 @@ A modern, minimalist blog template built with Django, Docker, and Next.js. The t
 
 2. Create environment files:
    ```bash
-   # Copy the example environment file
+   # Copy the example environment file for development
    cp .env.example .env.dev
-   # Edit the .env.dev file as needed
+   # Copy the example environment file for production
+   cp .env.example .env.prod
+   # Edit the .env.dev and .env.prod files as needed
    ```
 
 3. Build and start the containers:
@@ -55,7 +57,7 @@ A modern, minimalist blog template built with Django, Docker, and Next.js. The t
 - `frontend/`: Next.js frontend
 - `docker-compose.yml`: Docker Compose configuration
 - `.env.dev`: Development environment variables
-- `.env.prod`: Production environment variables (create for production)
+- `.env.prod`: Production environment variables (copy from `.env.example` and customize)
 - Temporary test files (`frontend/pages/index.test.tsx`, `frontend/components/IntersectionObserverTest.js`) and a stale `performance.json` were removed.
 
 ## Development Workflow
@@ -89,7 +91,7 @@ Changes to the frontend code will automatically trigger a hot reload.
 
 For production deployment:
 
-1. Create a `.env.prod` file with production settings
+1. Create a `.env.prod` file with your production values (set `DEBUG=False` and update database, cache, and allowed host settings).
 2. Build and run the containers with production configuration:
    ```bash
    docker-compose -f docker-compose.prod.yml up -d
