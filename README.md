@@ -92,6 +92,26 @@ Changes to the frontend code will automatically trigger a hot reload.
 
 For production deployment:
 
+1. Create a `.env.prod` file using the provided example and update it with your
+   production settings:
+   ```bash
+   cp .env.prod.example .env.prod
+   # Set SECRET_KEY, DJANGO_ALLOWED_HOSTS and other credentials
+   ```
+
+2. Build the Docker images defined in the production compose file:
+   ```bash
+   docker-compose -f docker-compose.prod.yml build
+   ```
+
+3. Launch the services in detached mode:
+   ```bash
+   docker-compose -f docker-compose.prod.yml up -d
+   ```
+   The containers will read environment variables from `.env.prod`. Ensure all
+   secrets, such as the Django `SECRET_KEY` and database passwords, are
+   configured before starting.
+
 
 ## License
 
