@@ -66,4 +66,7 @@ Thumbs.db
 
 # Unignore frontend/lib directory for API client code
 !frontend/lib/
-!frontend/lib/** 
+!frontend/lib/**
+
+# Ignore Celery beat schedule file
+backend/celerybeat-schedule
