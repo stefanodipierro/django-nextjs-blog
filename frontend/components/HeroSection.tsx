@@ -3,6 +3,8 @@ import Image from 'next/image';
 import { ThemeData } from '../lib/api';
 import { getOptimizedImageUrl } from '../lib/utils';
 
+const isDev = process.env.NODE_ENV === 'development';
+
 interface HeroSectionProps {
   theme: ThemeData | null;
   title: string;
@@ -31,11 +33,15 @@ const HeroSection: React.FC<HeroSectionProps> = ({
     );
   }
 
-  console.log(`[HeroSection] Original hero image URL: ${theme.hero_image}`);
+  if (isDev) {
+    console.log(`[HeroSection] Original hero image URL: ${theme.hero_image}`);
+  }
   
   // Get optimized image URL for the hero image
   const optimizedHeroImageUrl = getOptimizedImageUrl(theme.hero_image);
-  console.log(`[HeroSection] Optimized hero image URL: ${optimizedHeroImageUrl}`);
+  if (isDev) {
+    console.log(`[HeroSection] Optimized hero image URL: ${optimizedHeroImageUrl}`);
+  }
 
   return (
     <div className="relative h-80 sm:h-96 md:h-[500px] w-full mb-12 overflow-hidden">

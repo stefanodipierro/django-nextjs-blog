@@ -10,6 +10,8 @@ import remarkGfm from 'remark-gfm';
 import SocialShare from '../../components/SocialShare';
 import { getOptimizedImageUrl, getPublicImageUrl, getCanonicalUrl } from '../../lib/utils';
 
+const isDev = process.env.NODE_ENV === 'development';
+
 interface PostPageProps {
   post: Post | null;
 }
@@ -26,24 +28,28 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   if (!post) {
     return { notFound: true };
   }
-  console.log(`[SSR] Post ${slug} data:`, { 
-    id: post.id, 
-    featured_image: post.featured_image,
-    side_image_1: post.side_image_1,
-    side_image_2: post.side_image_2
-  });
+  if (isDev) {
+    console.log(`[SSR] Post ${slug} data:`, {
+      id: post.id,
+      featured_image: post.featured_image,
+      side_image_1: post.side_image_1,
+      side_image_2: post.side_image_2
+    });
+  }
   return { props: { post } };
 };
 
 const PostPage: React.FC<PostPageProps> = ({ post }) => {
   useEffect(() => {
     if (post) {
-      console.log(`[PostPage] Client-side, Post ${post.id} - ${post.title}`);
-      console.log(`[PostPage] Original image URLs:`, {
-        featured: post.featured_image,
-        side1: post.side_image_1,
-        side2: post.side_image_2
-      });
+      if (isDev) {
+        console.log(`[PostPage] Client-side, Post ${post.id} - ${post.title}`);
+        console.log(`[PostPage] Original image URLs:`, {
+          featured: post.featured_image,
+          side1: post.side_image_1,
+          side2: post.side_image_2
+        });
+      }
     }
   }, [post]);
 
@@ -55,30 +61,36 @@ const PostPage: React.FC<PostPageProps> = ({ post }) => {
     day: 'numeric',
   });
 
-  console.log(`[PostPage] Server-side or Hydration, Post ${post.id} - ${post.title}`);
-  console.log('[PostPage] Getting optimized image URLs');
+  if (isDev) {
+    console.log(`[PostPage] Server-side or Hydration, Post ${post.id} - ${post.title}`);
+    console.log('[PostPage] Getting optimized image URLs');
+  }
 
   // Get optimized image URLs for rendering in the page
   const optimizedFeaturedImage = getOptimizedImageUrl(post.featured_image);
   const optimizedSideImage1 = getOptimizedImageUrl(post.side_image_1 || null);
   const optimizedSideImage2 = getOptimizedImageUrl(post.side_image_2 || null);
 
-  console.log('[PostPage] Optimized image URLs:', {
-    featured: optimizedFeaturedImage,
-    side1: optimizedSideImage1,
-    side2: optimizedSideImage2
-  });
+  if (isDev) {
+    console.log('[PostPage] Optimized image URLs:', {
+      featured: optimizedFeaturedImage,
+      side1: optimizedSideImage1,
+      side2: optimizedSideImage2
+    });
+  }
 
   // Get proper public URLs for meta tags
   const metaFeaturedImage = getPublicImageUrl(post.featured_image);
   const metaSideImage1 = getPublicImageUrl(post.side_image_1 || null);
   const metaSideImage2 = getPublicImageUrl(post.side_image_2 || null);
 
-  console.log('[PostPage] Meta tag image URLs:', {
-    featured: metaFeaturedImage,
-    side1: metaSideImage1,
-    side2: metaSideImage2
-  });
+  if (isDev) {
+    console.log('[PostPage] Meta tag image URLs:', {
+      featured: metaFeaturedImage,
+      side1: metaSideImage1,
+      side2: metaSideImage2
+    });
+  }
 
   // Canonical URL for this post
   const canonicalUrl = getCanonicalUrl(`/posts/${post.slug}`);
