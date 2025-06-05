@@ -70,3 +70,9 @@ Thumbs.db
 
 # Ignore Celery beat schedule file
 backend/celerybeat-schedule
+*.tsbuildinfo
+# Test artifacts
+frontend/pages/index.test.tsx
+frontend/components/IntersectionObserverTest.js
+performance.json
+
