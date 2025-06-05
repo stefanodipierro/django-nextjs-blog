@@ -11,6 +11,7 @@ A modern, minimalist blog template built with Django, Docker, and Next.js. The t
 - Redis for caching
 - Celery for background tasks
 - Markdown support for content creation
+- Sanitized Markdown rendering with `rehype-sanitize`
 - Dark/light mode toggle
 - Featured posts management
 - Newsletter subscription
