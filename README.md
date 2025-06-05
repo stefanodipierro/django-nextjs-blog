@@ -117,4 +117,18 @@ This project dynamically generates OpenGraph and Twitter meta tags for each post
 
 - Use Facebook OpenGraph Debugger (https://developers.facebook.com/tools/debug/) to confirm OG tags.
 - Use Twitter Card Validator (https://cards-dev.twitter.com/validator) for Twitter cards.
-- Run Lighthouse or other SEO audit tools to ensure meta-tag coverage. 
+- Run Lighthouse or other SEO audit tools to ensure meta-tag coverage.
+
+### Running Tests
+
+Automated tests cover both the Django API and basic Next.js components.
+
+```bash
+# Backend
+python backend/manage.py test api --settings=blog.test_settings
+
+# Frontend
+npm test --prefix frontend
+```
+
+These same commands run in the CI workflow.
